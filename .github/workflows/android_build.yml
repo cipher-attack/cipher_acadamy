@@ -20,7 +20,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Cache removed to prevent "lock file not found" error
 
       - name: Setup Java JDK
         uses: actions/setup-java@v3
@@ -31,7 +30,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets --save-dev
+          npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/filesystem @capacitor/share --save
 
       - name: Build Web App
         run: npm run build
@@ -40,12 +39,19 @@ jobs:
         run: |
           npx cap add android
 
-      - name: Generate App Icons & Splash
-        # Downloads the logo referenced in your manifest to serve as the App Icon
+      # --- FIXED ICON GENERATION STEP ---
+      # Instead of downloading, we CREATE the SVG file right here.
+      # This ensures the file exists and uses your custom brand design.
+      - name: Create Custom Icon Asset
         run: |
           mkdir -p assets
-          curl -o assets/logo.png https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/kali-linux.png
-          npx @capacitor/assets generate --iconBackgroundColor '#050505' --splashBackgroundColor '#050505' --assetPath assets/logo.png --android
+          # This writes the SVG code directly into assets/logo.svg
+          echo '<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#000"/></linearGradient></defs><rect width="512" height="512" rx="100" fill="url(#g)"/><path d="M256 50L80 140v190c0 80 176 132 176 132s176-52 176-132V140L256 50z" fill="none" stroke="#C5A059" stroke-width="15"/><g transform="translate(106,106) scale(3)"><path d="M75 25L35 25 15 50l20 25h40" stroke="#C5A059" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="40" cy="50" r="10" stroke="#C5A059" stroke-width="6"/><path d="M50 50h35M68 50v12M78 50v8" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/></g></svg>' > assets/logo.svg
+
+      - name: Generate Android Icons
+        # Now we point to the LOCAL file we just created
+        run: |
+          npx @capacitor/assets generate --iconBackgroundColor '#050505' --splashBackgroundColor '#050505' --assetPath assets/logo.svg --android
 
       - name: Sync Capacitor
         run: npx cap sync android
