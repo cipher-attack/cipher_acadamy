@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- PWA Theme Colors -->
+    <meta name="theme-color" content="#030303" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    
+    <!-- SEO & PWA Meta -->
+    <meta name="description" content="Learn Ethical Hacking & Python Programming in Amharic.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Cipher Academy">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./assets/manifest-kJUWIEof.json">
+    
+    <!-- iOS Icons (using the same source as manifest for consistency) -->
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/kali-linux.png">
+
+    <title>Cipher Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Removed blocking Pyodide script. It is now loaded via Web Worker -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+              sans: ['"Inter"', 'sans-serif'],
+              serif: ['"Playfair Display"', 'serif'],
+            },
+            colors: {
+              // Professional Palette: Gold & Deep Black
+              brand: { DEFAULT: '#C5A059', hover: '#b08d4a', dark: '#8a6e35' }, 
+              canvas: { DEFAULT: '#030303', subtle: '#0a0a0a' },
+              border: { DEFAULT: '#27272a' } // Zinc-800
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root { --app-height: 100dvh; }
+      body, html {
+        height: 100%; height: var(--app-height); width: 100vw;
+        overflow-x: hidden; background-color: #030303; color: #e4e4e7; /* Zinc-200 */
+      }
+      /* CRITICAL FIX FOR MOBILE OVERFLOW */
+      pre, code {
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+      }
+      .prose pre {
+        overflow-x: auto !important;
+        white-space: pre !important; /* Keep code blocks scrollable internally */
+        background-color: #09090b !important; /* Zinc-950 */
+        border: 1px solid #27272a;
+      }
+      /* Professional Scrollbar */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: #030303; }
+      ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; } /* Zinc-700 */
+      ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+      
+      /* Remove tap highlight on mobile */
+      * { -webkit-tap-highlight-color: transparent; }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+<script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
+    "idb": "https://esm.sh/idb@^8.0.3",
+    "html2canvas": "https://esm.sh/html2canvas@^1.4.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0",
+    "@capacitor/cli": "https://esm.sh/@capacitor/cli@^8.0.1"
+  }
+}
+</script>
+  <script type="module" crossorigin src="./assets/index-BOMAWtvf.js"></script>
+<link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
+<body>
+    <div id="root"></div>
+    <script>
+      const appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      window.addEventListener('resize', appHeight); appHeight();
+
+      // Register Service Worker for PWA (with Error Suppression)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('SW Registered'))
+            .catch(err => {
+                // Suppress error in cloud environments to avoid console noise
+                console.log('SW Note: Offline mode skipped in this environment.');
+            });
+        });
+      }
+    </script>
+</body>
+</html>
