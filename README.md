@@ -1,49 +1,43 @@
 
-# Cipher Academy: Advanced Ethical Hacking Simulation Platform
+# Cipher Academy
 
-Cipher Academy is a sophisticated, browser-based educational environment designed to demystify offensive security concepts and Python programming. Built with React and TypeScript, it provides a safe, isolated sandbox where users can practice penetration testing methodologies, analyze vulnerabilities, and execute Python scripts directly in the browser.
+Browser-based offensive security sandbox. Runs Python 3.11 entirely client-side using WebAssembly (Pyodide).
 
-## Core Architecture
+## Architecture Reference
 
-The platform operates as a **Progressive Web App (PWA)**, ensuring full offline capabilities and native-like performance on mobile devices. It leverages a hybrid execution engine:
+| Component | Implementation | Notes |
+| :--- | :--- | :--- |
+| **Runtime** | Pyodide / Web Workers | Isolates code execution from the main thread |
+| **Shell** | Virtualized Terminal | Simulates Kali Linux environment commands |
+| **Storage** | IndexedDB | Offline persistence for user progress |
+| **Content** | Static Modules | Dual-language (Amharic/English) curriculum |
 
-*   **Virtual Terminal:** A simulated Kali Linux shell environment.
-*   **Python Runtime:** Browser-based Python execution via Web Workers (Pyodide), allowing real-time code analysis without server-side dependencies.
-*   **AI Tutor:** Integrated Gemini AI assistance for code auditing and logic explanation.
+## Core Modules
 
-## Key Features
+1.  **Curriculum**
+    *   Python Syntax & Logic
+    *   Network Reconnaissance (Socket programming)
+    *   Exploit Development (Keyloggers, ARP logic)
 
-### 1. Interactive Learning Roadmap
-A structured curriculum guiding users from basic Python syntax to advanced exploit development. Content is delivered in Amharic to bridge the language gap in cybersecurity education.
+2.  **CTF Arena**
+    *   **Cryptography:** XOR, Base64, RSA, Hashing
+    *   **Forensics:** Log analysis, Hex dumps, Metadata extraction
+    *   **Web:** SQLi logic, Header manipulation, Cookie tampering
 
-### 2. Capture The Flag (CTF) Arena
-Real-world scenario simulations ranging from cryptography puzzles to log analysis and steganography.
-*   **Reverse Engineering:** Logic gates and mathematical puzzles.
-*   **Cryptography:** Decrypting ciphers and hash cracking.
-*   **Forensics:** Analyzing server logs and corrupted files.
+3.  **IDE**
+    *   In-browser code editor
+    *   Real-time syntax highlighting
+    *   Vulnerability scanning simulation
 
-### 3. Integrated Development Environment (IDE)
-*   **Code Editor:** Syntax highlighting and auto-completion.
-*   **Console:** Real-time output visualization.
-*   **Security Auditor:** Automated vulnerability scanning for user scripts.
+## Setup
 
-## Technical Stack
-
-*   **Frontend:** React 18, TypeScript, Vite
-*   **Styling:** Tailwind CSS (Dark Mode optimized)
-*   **Runtime:** Web Workers, Pyodide (Python 3.11)
-*   **State Management:** IndexedDB (Offline Persistence)
-*   **AI Integration:** Google Gemini API
-
-## Installation
-
-This project is designed to be deployed as a static site or installed as a PWA.
+Standard Vite project structure.
 
 ```bash
 # Install dependencies
 npm install
 
-# Start development server
+# Start local server
 npm run dev
 
 # Build for production
@@ -52,8 +46,8 @@ npm run build
 
 ## Deployment
 
-The application is configured for automated deployment via GitHub Actions. Pushing to the `main` branch triggers a build process that generates a production-ready artifact hosted on GitHub Pages.
+Configured for GitHub Pages. Pushing to `main` triggers the build workflow via GitHub Actions.
 
 ## License
 
-MIT License. Educational use only.
+MIT.
