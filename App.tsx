@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  ShieldCheck, Menu, ChevronLeft, BookOpen, MessageSquare, Settings, Activity, Zap, ChevronDown, ChevronRight, Flag, Award, Terminal as TerminalIcon, Layers, Lock, Sun, Moon, CheckCircle, Code, ArrowLeft, Send, Clipboard, X, HelpCircle, Book, Flame, MapPin, ToggleRight, ToggleLeft, FastForward, Key
+  ShieldCheck, Menu, ChevronLeft, BookOpen, MessageSquare, Settings, Activity, Zap, ChevronDown, ChevronRight, Flag, Award, Terminal as TerminalIcon, Layers, Lock, Sun, Moon, CheckCircle, Code, ArrowLeft, Send, Clipboard, X, HelpCircle, Book, Flame, MapPin, ToggleRight, ToggleLeft, FastForward, Key, AlertTriangle, Check
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import Terminal from './components/Terminal';
@@ -329,6 +329,16 @@ const App: React.FC = () => {
     setShowApiKeyModal(false);
   };
 
+  const handleCertificateAccess = () => {
+      if (userProfile?.isCertified) {
+          setAppState(AppState.CERTIFICATE);
+      } else {
+          alert("Access Denied: You must pass the Final Certification Exam first.");
+      }
+      setMobileMenuOpen(false); 
+      setActiveMobileTab('learn');
+  };
+
   const getDifficultyColor = (diff: string) => {
     switch(diff) {
         case 'Beginner': return 'bg-gray-800 text-gray-400 border-gray-700';
@@ -361,9 +371,9 @@ const App: React.FC = () => {
                    <ShieldCheck size={16} className={userProfile?.isCertified ? "text-green-500" : "text-gray-400"} /> 
                    Certification
                </button>
-               <button onClick={() => {setAppState(AppState.CERTIFICATE); setMobileMenuOpen(false); setActiveMobileTab('learn');}} className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors ${appState === AppState.CERTIFICATE ? 'bg-brand/10 text-brand' : 'text-gray-400 hover:bg-[#111]'}`}>
+               <button onClick={handleCertificateAccess} className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors ${appState === AppState.CERTIFICATE ? 'bg-brand/10 text-brand' : 'text-gray-400 hover:bg-[#111]'}`}>
                    <Award size={16} className={userProfile?.isCertified ? "text-brand" : "text-gray-400"} /> 
-                   My Credential
+                   My Credential {userProfile?.isCertified ? "" : "(Locked)"}
                </button>
                <button onClick={() => setShowApiKeyModal(true)} className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium text-gray-400 hover:bg-[#111] transition-colors">
                    <Key size={16} /> API Key
@@ -444,11 +454,11 @@ const App: React.FC = () => {
                 {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
               </button>
 
-              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-[#111] rounded border border-gray-200 dark:border-[#27272a]">
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-[#111] rounded border border-gray-200 dark:border-gray-700">
                   <Flame size={12} className="text-orange-500 fill-orange-500" />
                   <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{userProfile?.streak || 1}</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-[#111] rounded border border-gray-200 dark:border-[#27272a]">
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-[#111] rounded border border-gray-200 dark:border-gray-700">
                   <Zap size={12} className="text-brand fill-brand" />
                   <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{userProfile?.xp || 0} XP</span>
               </div>
@@ -514,7 +524,15 @@ const App: React.FC = () => {
                                 </div>
                                 
                                 <div className="p-4 border border-gray-200 dark:border-[#27272a] rounded-lg bg-gray-50 dark:bg-[#050505]">
-                                    <div className="flex gap-2"><input type="text" value={flagInput} onChange={(e) => setFlagInput(e.target.value)} placeholder="CIPHER-CTF{...}" className="flex-1 bg-white dark:bg-[#0a0a0a] border border-gray-300 dark:border-[#27272a] rounded px-3 py-2 text-gray-900 dark:text-white font-mono text-sm focus:border-brand outline-none" /><button onClick={handleFlagSubmit} className="bg-gray-900 dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded text-sm hover:opacity-90">Submit</button></div>
+                                    <div className="flex gap-2 items-center">
+                                        <input type="text" value={flagInput} onChange={(e) => setFlagInput(e.target.value)} placeholder="CIPHER-CTF{...}" className={`flex-1 bg-white dark:bg-[#0a0a0a] border rounded px-3 py-2 text-gray-900 dark:text-white font-mono text-sm outline-none transition-all ${flagStatus === 'error' ? 'border-red-500 ring-1 ring-red-500 animate-pulse' : 'border-gray-300 dark:border-[#27272a] focus:border-brand'}`} />
+                                        <button onClick={handleFlagSubmit} className="bg-gray-900 dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded text-sm hover:opacity-90 flex items-center gap-2">
+                                            {flagStatus === 'success' ? <Check size={16} className="text-green-500" /> : flagStatus === 'error' ? <AlertTriangle size={16} className="text-red-500" /> : <Send size={16} />}
+                                            {flagStatus === 'success' ? "CAPTURED" : "Submit"}
+                                        </button>
+                                    </div>
+                                    {flagStatus === 'success' && <p className="text-green-500 text-xs mt-2 font-bold animate-bounce">Access Granted! +{activeCTF.xpReward} XP</p>}
+                                    {flagStatus === 'error' && <p className="text-red-500 text-xs mt-2 font-bold">Incorrect Flag. Try again.</p>}
                                 </div>
                             </div>
                         </div>
@@ -597,8 +615,15 @@ const App: React.FC = () => {
                             <div className="prose prose-sm max-w-none mb-6 break-words text-gray-700 dark:text-gray-400 leading-relaxed dark:prose-invert">
                                 <ReactMarkdown components={MarkdownComponents}>{activeCTF.description}</ReactMarkdown>
                             </div>
-                            <div className="mb-6">
-                                <div className="flex gap-2"><input type="text" value={flagInput} onChange={(e) => setFlagInput(e.target.value)} placeholder="CIPHER-CTF{...}" className="flex-1 border rounded px-3 py-2 text-sm bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white border-gray-300 dark:border-[#27272a] font-mono outline-none focus:border-brand" /><button onClick={handleFlagSubmit} className="bg-gray-900 dark:bg-white text-white dark:text-black px-4 rounded font-bold text-sm"><Send size={16}/></button></div>
+                            <div className="mb-6 p-4 rounded-lg bg-gray-50 dark:bg-[#050505] border border-gray-200 dark:border-[#27272a]">
+                                <div className="flex gap-2 items-center">
+                                    <input type="text" value={flagInput} onChange={(e) => setFlagInput(e.target.value)} placeholder="CIPHER-CTF{...}" className={`flex-1 border rounded px-3 py-2 text-sm bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white font-mono outline-none transition-all ${flagStatus === 'error' ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300 dark:border-[#27272a] focus:border-brand'}`} />
+                                    <button onClick={handleFlagSubmit} className="bg-gray-900 dark:bg-white text-white dark:text-black px-4 rounded font-bold text-sm h-[38px] flex items-center justify-center min-w-[50px]">
+                                        {flagStatus === 'success' ? <Check size={16} className="text-green-500" /> : <Send size={16} />}
+                                    </button>
+                                </div>
+                                {flagStatus === 'success' && <p className="text-green-500 text-xs mt-2 font-bold text-center">Correct! +{activeCTF.xpReward} XP</p>}
+                                {flagStatus === 'error' && <p className="text-red-500 text-xs mt-2 font-bold text-center">Incorrect Flag</p>}
                             </div>
                         </div>
                     )}
