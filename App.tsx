@@ -588,6 +588,16 @@ const App: React.FC = () => {
                                     <div className="bg-brand h-full" style={{ width: `${(completedLessons.length / syllabus.length) * 100}%` }}></div>
                                 </div>
                             </div>
+                            
+                            {/* Restored Advanced Path Switch Button for Mobile */}
+                            <div className="flex justify-between items-center mb-6 px-1">
+                                <h3 className="font-bold text-gray-900 dark:text-white text-lg font-serif">Curriculum</h3>
+                                <button onClick={handleSwitchTrack} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[10px] font-bold transition-all ${userProfile?.isBeginner ? 'bg-brand/10 border-brand text-brand' : 'bg-gray-100 dark:bg-[#111] border-gray-300 dark:border-[#333] text-gray-500 dark:text-gray-400'}`}>
+                                    {userProfile?.isBeginner ? <ToggleLeft size={16}/> : <ToggleRight size={16}/>}
+                                    {userProfile?.isBeginner ? "Beginner" : "Advanced"}
+                                </button>
+                            </div>
+
                             <LearningRoadmap syllabus={syllabus} completedIds={completedLessons} onSelect={handleSelectLesson} activeId={activeLessonId} />
                          </div>
                     )}
