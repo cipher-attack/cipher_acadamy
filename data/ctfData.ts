@@ -148,5 +148,39 @@ export const CTF_CHALLENGES: CTFChallenge[] = [
     targetIP: "Shadow-Database",
     flag: "CIPHER-CTF{password}",
     xpReward: 1000
+  },
+  // --- NEW ELITE CHALLENGES ---
+  {
+    id: "ctf-13",
+    title: "Mission 13: Ransomware Decryption",
+    difficulty: "Insane",
+    description: "### Mission Briefing\nአንድ የሆስፒታል ኮምፒውተር በ Ransomware ተጠቅቷል። ፋይሎቹ ተቆልፈዋል።\n\nሃከሩ የጻፈው Decryption Script ተገኝቷል፣ ግን አንድ ወሳኝ ቁጥር ጎድሎታል። ቁልፉ (Key) የሚሰራው በ `XOR` ነው።\n\n**Encrypted Bytes:** `[10, 20, 5, 2]`\n**Expected Output (Partial):** `HELP` (ASCII: 72, 69, 76, 80)\n\n**Objective:**\nየተሰጠው Encrypted Bytes ምን ቢጨመርበት (XOR) ነው `HELP` የሚሰጠው? ያንን ቁልፍ ፈልገህ ሙሉውን መልዕክት አውጣ።\n\n**Full Encrypted Data:** `[10, 20, 5, 2, 12, 85, 6, 20, 21, 85, 17, 8, 1, 10]`",
+    hint: "If A ^ Key = B, then A ^ B = Key. Use the first letter 'H' (72) and first byte (10) to find the key.",
+    walkthrough: "### Solution Breakdown\n1.  **XOR Property:** `10 ^ Key = 72 ('H')`. ስለዚህ `10 ^ 72 = Key`።\n2.  Key ስንት ነው? `10 ^ 72 = 66`።\n3.  አሁን 66ን ተጠቅመህ ሁሉንም Decrypt አድርግ።\n\n### Python Code\n```python\nencrypted = [10, 20, 5, 2, 12, 85, 6, 20, 21, 85, 17, 8, 1, 10]\nkey = 66\n\ndecrypted = \"\"\nfor b in encrypted:\n    decrypted += chr(b ^ key)\nprint(decrypted)\n```",
+    targetIP: "ICU-System-Lock",
+    flag: "CIPHER-CTF{pay_me_btc}",
+    xpReward: 1500
+  },
+  {
+    id: "ctf-14",
+    title: "Mission 14: IoT Thermostat Hack",
+    difficulty: "Insane",
+    description: "### Mission Briefing\nየአንድ ትልቅ Data Center የሙቀት መቆጣጠሪያ (IoT Thermostat) በ JSON ትዕዛዝ ይሰራል።\n\nየሙቀት መጠኑን ከ 20 ወደ 100 ዲግሪ በመቀየር ሰርቨሮቹን ማቅለጥ አለብን።\n\n**CURRENT CONFIG:**\n`{\"device_id\": 99, \"temp\": 20, \"role\": \"user\"}`\n\n**Objective:**\nJSON Manipulation ተጠቅመህ `role` ወደ `admin` እና `temp` ወደ `100` ቀይር። የመጨረሻው JSON String ፍላግ ነው። (Use single quotes appropriately). Space አታብዛ።",
+    hint: "Just construct the string. `{\"device_id\": 99, \"temp\": 100, \"role\": \"admin\"}`",
+    walkthrough: "### Solution Breakdown\nIoT መሳሪያዎች ብዙ ጊዜ Input Validation አይሰሩም። የምንልከውን JSON ከተቀበሉ ይሰራሉ።\n\n### Python Code\n```python\nimport json\n\npayload = {\n    \"device_id\": 99,\n    \"temp\": 100,\n    \"role\": \"admin\"\n}\n\n# Convert to string without spaces\nmsg = json.dumps(payload).replace(\" \", \"\")\nprint(f\"CIPHER-CTF{{{msg}}}\")\n```",
+    targetIP: "IoT-Controller-Z1",
+    flag: "CIPHER-CTF{{\"device_id\":99,\"temp\":100,\"role\":\"admin\"}}",
+    xpReward: 2000
+  },
+  {
+    id: "ctf-15",
+    title: "Mission 15: Dark Web Onion",
+    difficulty: "Insane",
+    description: "### Mission Briefing\nበ Dark Web ላይ አንድ የተደበቀ አገልግሎት (Hidden Service) አድራሻ አግኝተናል። ግን አድራሻው በ **RSA Encryption** ተቆልፏል።\n\nየ Private Key እና Public Key ተሰጥቶናል።\n\n**Variables:**\n*   `n = 3233` (Modulus)\n*   `e = 17` (Public Exponent)\n*   `d = 2753` (Private Exponent)\n*   `ciphertext = 2790`\n\n**Objective:**\nRSA Decryption Formula: `M = (C ** d) % n` ተጠቅመህ የተደበቀውን ቁጥር አግኝ። ቁጥሩ ራሱ ፍላጉ ነው።",
+    hint: "Use Python's `pow(base, exp, mod)` function for efficiency.",
+    walkthrough: "### Solution Breakdown\nRSA መሰረታዊ የሂሳብ ቀመር ነው።\nMessage = (Ciphertext ^ PrivateKey) % Modulus\n\n### Python Code\n```python\nn = 3233\nd = 2753\nc = 2790\n\n# Calculate C^d % n\nmessage = pow(c, d, n)\nprint(f\"Decrypted: {message}\")\nprint(f\"Flag: CIPHER-CTF{{{message}}}\")\n```",
+    targetIP: "Tor-Node-Exit",
+    flag: "CIPHER-CTF{65}",
+    xpReward: 2500
   }
 ];
