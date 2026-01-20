@@ -188,11 +188,34 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
 
         document.body.removeChild(clone);
         
-        const image = canvas.toDataURL("image/png", 1.0);
-        const link = document.createElement("a");
-        link.href = image;
-        link.download = `Cipher_Certificate_${user.username}.png`;
-        link.click();
+        // --- MOBILE FRIENDLY DOWNLOAD/SHARE ---
+        // Android WebViews often block 'a.download'. We use the Share API if available.
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+        
+        if (blob && navigator.share) {
+            try {
+                const file = new File([blob], `Cipher_Certificate_${user.username}.png`, { type: 'image/png' });
+                await navigator.share({
+                    title: 'Cipher Academy Certificate',
+                    text: `I just got certified in Ethical Hacking by Cipher Academy!`,
+                    files: [file]
+                });
+            } catch (err) {
+                // If share fails (e.g. user cancelled), fallback to simple download
+                const image = canvas.toDataURL("image/png", 1.0);
+                const link = document.createElement("a");
+                link.href = image;
+                link.download = `Cipher_Certificate_${user.username}.png`;
+                link.click();
+            }
+        } else {
+            // Desktop fallback
+            const image = canvas.toDataURL("image/png", 1.0);
+            const link = document.createElement("a");
+            link.href = image;
+            link.download = `Cipher_Certificate_${user.username}.png`;
+            link.click();
+        }
 
     } catch (e) {
         console.error("Certificate generation failed", e);
@@ -225,12 +248,12 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
             className="w-full flex items-center justify-center gap-3 bg-[#C5A059] text-black px-6 py-4 rounded-xl font-bold hover:bg-[#b08d4a] transition-all shadow-[0_4px_20px_rgba(197,160,89,0.3)] hover:shadow-[0_6px_25px_rgba(197,160,89,0.5)] hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed tracking-wide uppercase text-sm"
         >
             {isGenerating ? <Loader2 className="animate-spin" size={20}/> : <Download size={20} />}
-            {isGenerating ? "Engraving..." : "Download Certificate"}
+            {isGenerating ? "Engraving..." : "Download / Share"}
         </button>
         
         <div className="flex items-center gap-2 text-gray-500 text-xs">
             <Share2 size={12} />
-            <span>Ready for LinkedIn & Portfolio</span>
+            <span>Save to Gallery or Share</span>
         </div>
       </div>
 
