@@ -1,7 +1,16 @@
-
 # Cipher Academy
 
 Browser-based offensive security sandbox. Runs Python 3.11 entirely client-side using WebAssembly (Pyodide).
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]() 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Access
+
+This project runs directly in the browser as a Progressive Web App (PWA).
+
+*   **Live Demo:** [Insert Your App Link Here]
+*   **Status:** Active Development
 
 ## Architecture Reference
 
@@ -42,12 +51,3 @@ npm run dev
 
 # Build for production
 npm run build
-```
-
-## Deployment
-
-Configured for GitHub Pages. Pushing to `main` triggers the build workflow via GitHub Actions.
-
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
