@@ -1,9 +1,12 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Download, Loader2, Share2, ShieldCheck } from 'lucide-react';
 import { UserProfile } from '../types';
 import Logo from './Logo';
 import html2canvas from 'html2canvas';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 
 interface CertificateProps {
   user: UserProfile;
@@ -12,7 +15,6 @@ interface CertificateProps {
 }
 
 // --- ASSETS ---
-// Subtle paper grain texture
 const PAPER_NOISE = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E`;
 
 const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProfile, courseName: string, currentDate: string }) => {
@@ -29,29 +31,23 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
                 height: '700px', 
                 minWidth: '1000px',
                 minHeight: '700px',
-                backgroundColor: '#fdfbf7', // Premium Off-White
+                backgroundColor: '#fdfbf7',
                 backgroundImage: `url("${PAPER_NOISE}"), radial-gradient(circle at 50% 30%, #fff 0%, #fdfbf7 100%)`,
-                textRendering: 'optimizeLegibility',
-                fontSmooth: 'always',
-                WebkitFontSmoothing: 'antialiased'
             }}
         >
             {/* --- MINIMALIST BORDER --- */}
-            {/* Outer double line */}
             <div className="absolute inset-6 border-[3px] border-[#111] z-10 pointer-events-none"></div>
-            {/* Inner Gold accent - Updated Color */}
             <div className="absolute inset-8 border-[1px] border-[#C5A059] z-10 pointer-events-none opacity-60"></div>
 
-            {/* --- BACKGROUND ELEMENTS --- */}
-            {/* Centered Watermark Logo */}
+            {/* --- BACKGROUND --- */}
             <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
                 <Logo className="w-[700px] h-[700px] text-black" />
             </div>
 
-            {/* --- CONTENT LAYER --- */}
+            {/* --- CONTENT --- */}
             <div className="relative z-30 flex flex-col h-full py-20 px-24">
                 
-                {/* 1. HEADER SECTON */}
+                {/* HEADER */}
                 <div className="flex justify-between items-start mb-16">
                     <div className="flex flex-col">
                          <div className="flex items-center gap-3 mb-2">
@@ -66,7 +62,7 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
                     </div>
                 </div>
 
-                {/* 2. MAIN BODY */}
+                {/* BODY */}
                 <div className="flex-1 flex flex-col justify-center items-center text-center -mt-10">
                     <h1 className="text-5xl font-serif text-[#111] tracking-tight mb-4" style={{ fontFamily: '"Playfair Display", serif', fontWeight: 900 }}>
                         CERTIFICATE
@@ -75,7 +71,6 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
 
                     <p className="text-lg text-[#444] font-serif italic mb-8">This credential is awarded to</p>
                     
-                    {/* NAME SECTION */}
                     <div className="relative inline-block min-w-[550px] mx-auto mb-10">
                         <div className="border-b-2 border-[#111] px-10 pb-4">
                             <h2 className="text-5xl font-serif text-[#000] font-bold capitalize whitespace-nowrap tracking-wide leading-none translate-y-1" style={{ fontFamily: '"Playfair Display", serif' }}>
@@ -90,22 +85,17 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
                     </p>
                 </div>
 
-                {/* 3. FOOTER SIGNATURES */}
+                {/* FOOTER */}
                 <div className="w-full flex justify-between items-end mt-auto pt-10">
-                    
-                    {/* Date */}
                     <div className="text-center">
                         <div className="w-40 border-t border-[#999] pt-3 text-lg font-serif text-[#111]">{currentDate}</div>
                         <div className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mt-1">Date Issued</div>
                     </div>
 
-                    {/* EMBOSSED SEAL */}
                     <div className="relative -mb-4">
                         <div className="w-28 h-28 rounded-full border border-[#C5A059] flex items-center justify-center bg-gradient-to-br from-[#fff] to-[#f0f0f0] shadow-lg relative">
-                             {/* Inner Ring */}
                             <div className="absolute inset-1 rounded-full border-[2px] border-[#C5A059] opacity-30"></div>
                             <div className="absolute inset-2 rounded-full border border-[#111] opacity-10"></div>
-                            
                             <div className="flex flex-col items-center justify-center z-10">
                                 <ShieldCheck size={32} className="text-[#C5A059] mb-1" />
                                 <span className="text-[6px] font-black tracking-widest text-[#111] uppercase mt-1">Cipher<br/>Verified</span>
@@ -113,7 +103,6 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
                         </div>
                     </div>
 
-                    {/* Instructor / Platform */}
                     <div className="text-center">
                         <div className="w-40 border-t border-[#999] pt-3 text-lg font-serif text-[#111] flex justify-center items-center gap-2">
                              <Logo className="w-5 h-5 text-black" />
@@ -122,7 +111,6 @@ const CertificateTemplate = ({ user, courseName, currentDate }: { user: UserProf
                         <div className="text-[9px] uppercase tracking-widest text-gray-500 font-bold mt-1">Authority</div>
                     </div>
                 </div>
-
             </div>
         </div>
     );
@@ -137,7 +125,6 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
       day: 'numeric' 
   }));
 
-  // Auto-scale logic for mobile viewing
   useEffect(() => {
       const handleResize = () => {
           if (window.innerWidth < 1040) {
@@ -162,7 +149,7 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
 
         const clone = template.cloneNode(true) as HTMLElement;
         
-        // Ghost Settings
+        // Setup hidden clone for high-res capture
         clone.style.position = 'fixed';
         clone.style.top = '0';
         clone.style.left = '0';
@@ -181,45 +168,49 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
             backgroundColor: null, 
             logging: false,
             width: 1000,
-            height: 700,
-            windowWidth: 1000, 
-            windowHeight: 700
+            height: 700
         });
 
         document.body.removeChild(clone);
         
-        // --- MOBILE FRIENDLY DOWNLOAD/SHARE ---
-        // Android WebViews often block 'a.download'. We use the Share API if available.
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
-        
-        if (blob && navigator.share) {
-            try {
-                const file = new File([blob], `Cipher_Certificate_${user.username}.png`, { type: 'image/png' });
-                await navigator.share({
-                    title: 'Cipher Academy Certificate',
-                    text: `I just got certified in Ethical Hacking by Cipher Academy!`,
-                    files: [file]
-                });
-            } catch (err) {
-                // If share fails (e.g. user cancelled), fallback to simple download
-                const image = canvas.toDataURL("image/png", 1.0);
-                const link = document.createElement("a");
-                link.href = image;
-                link.download = `Cipher_Certificate_${user.username}.png`;
-                link.click();
-            }
+        const base64Data = canvas.toDataURL("image/png", 1.0);
+
+        // --- NATIVE ANDROID/IOS HANDLING ---
+        if (Capacitor.isNativePlatform()) {
+            const fileName = `Cipher_Certificate_${user.username}.png`;
+            
+            // 1. Write file to cache directory
+            await Filesystem.writeFile({
+                path: fileName,
+                data: base64Data, // Filesystem accepts data urls directly
+                directory: Directory.Cache
+            });
+
+            // 2. Get the full URI
+            const uriResult = await Filesystem.getUri({
+                directory: Directory.Cache,
+                path: fileName
+            });
+
+            // 3. Share the file (This opens the native share sheet - Save to Gallery, Drive, etc.)
+            await Share.share({
+                title: 'Cipher Academy Certificate',
+                text: 'I am now a certified Ethical Hacker via Cipher Academy!',
+                url: uriResult.uri,
+                dialogTitle: 'Download Certificate'
+            });
+
         } else {
-            // Desktop fallback
-            const image = canvas.toDataURL("image/png", 1.0);
+            // --- WEB FALLBACK ---
             const link = document.createElement("a");
-            link.href = image;
+            link.href = base64Data;
             link.download = `Cipher_Certificate_${user.username}.png`;
             link.click();
         }
 
     } catch (e) {
-        console.error("Certificate generation failed", e);
-        alert("Could not generate certificate. Please try using a Desktop browser.");
+        console.error("Generation failed", e);
+        alert("Download failed. Please try again.");
     } finally {
         setIsGenerating(false);
     }
@@ -227,8 +218,6 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
 
   return (
     <div className="flex flex-col items-center justify-center p-4 w-full h-full overflow-y-auto bg-[#030303] relative">
-      
-      {/* VISIBLE PREVIEW */}
       <div 
         style={{ 
             transform: `scale(${scale})`, 
@@ -240,35 +229,16 @@ const Certificate: React.FC<CertificateProps> = ({ user, courseName }) => {
           <CertificateTemplate user={user} courseName={courseName} currentDate={currentDate} />
       </div>
 
-      {/* CONTROLS */}
       <div className="flex flex-col items-center gap-4 mt-12 mb-20 z-50 w-full max-w-sm">
         <button 
             onClick={handleDownload}
             disabled={isGenerating}
-            className="w-full flex items-center justify-center gap-3 bg-[#C5A059] text-black px-6 py-4 rounded-xl font-bold hover:bg-[#b08d4a] transition-all shadow-[0_4px_20px_rgba(197,160,89,0.3)] hover:shadow-[0_6px_25px_rgba(197,160,89,0.5)] hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed tracking-wide uppercase text-sm"
+            className="w-full flex items-center justify-center gap-3 bg-[#C5A059] text-black px-6 py-4 rounded-xl font-bold hover:bg-[#b08d4a] transition-all shadow-[0_4px_20px_rgba(197,160,89,0.3)] disabled:opacity-70 disabled:cursor-not-allowed tracking-wide uppercase text-sm"
         >
             {isGenerating ? <Loader2 className="animate-spin" size={20}/> : <Download size={20} />}
-            {isGenerating ? "Engraving..." : "Download / Share"}
+            {isGenerating ? "Processing..." : "Download Certificate"}
         </button>
-        
-        <div className="flex items-center gap-2 text-gray-500 text-xs">
-            <Share2 size={12} />
-            <span>Save to Gallery or Share</span>
-        </div>
       </div>
-
-      {/* Loading Overlay */}
-      {isGenerating && (
-          <div className="fixed inset-0 bg-black/90 z-[10000] flex flex-col items-center justify-center backdrop-blur-sm">
-              <div className="relative">
-                 <div className="w-16 h-16 border-4 border-[#C5A059]/30 rounded-full animate-spin"></div>
-                 <div className="absolute inset-0 border-t-4 border-[#C5A059] rounded-full animate-spin"></div>
-              </div>
-              <p className="text-[#C5A059] font-bold text-lg mt-6 tracking-widest uppercase">Engraving Document</p>
-              <p className="text-gray-500 text-sm mt-1">Verifying cryptographic signature...</p>
-          </div>
-      )}
-
     </div>
   );
 };
