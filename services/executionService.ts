@@ -2,34 +2,33 @@
 import { simulateCodeExecution } from './geminiService';
 
 // --- PYODIDE WORKER CODE ---
-// This code runs in a separate background thread
+// Updated: Added robust error handling for Android WebView environments
 const PYODIDE_WORKER_CODE = `
-importScripts("https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js");
+const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
 
-let pyodide = null;
-
-async function loadPyodideEngine() {
+async function init() {
   try {
-    pyodide = await loadPyodide();
+    importScripts(PYODIDE_URL);
+    self.pyodide = await loadPyodide();
     self.postMessage({ type: 'STATUS', msg: 'READY' });
   } catch (e) {
-    self.postMessage({ type: 'STATUS', msg: 'ERROR', error: e.toString() });
+    self.postMessage({ type: 'STATUS', msg: 'ERROR', error: "Failed to load Python Engine. Check Internet Connection." });
   }
 }
 
-loadPyodideEngine();
+init();
 
 self.onmessage = async (event) => {
   const { id, code } = event.data;
   
-  if (!pyodide) {
-    self.postMessage({ id, error: "System Initializing..." });
+  if (!self.pyodide) {
+    self.postMessage({ id, error: "Python Engine is still loading or failed..." });
     return;
   }
 
   try {
     // Redirect stdout/stderr to capture output
-    pyodide.runPython(\`
+    self.pyodide.runPython(\`
 import sys
 import io
 sys.stdout = io.StringIO()
@@ -37,13 +36,13 @@ sys.stderr = io.StringIO()
     \`);
     
     // Auto-install packages if needed (simple check)
-    await pyodide.loadPackagesFromImports(code);
+    await self.pyodide.loadPackagesFromImports(code);
     
     // Run async
-    await pyodide.runPythonAsync(code);
+    await self.pyodide.runPythonAsync(code);
     
-    const stdout = pyodide.runPython("sys.stdout.getvalue()");
-    const stderr = pyodide.runPython("sys.stderr.getvalue()");
+    const stdout = self.pyodide.runPython("sys.stdout.getvalue()");
+    const stderr = self.pyodide.runPython("sys.stderr.getvalue()");
     
     self.postMessage({ id, results: (stdout + stderr) || "[No Output]" });
   } catch (error) {
@@ -81,30 +80,45 @@ const fileSystem: Record<string, VirtualFile[]> = {
 export const initPythonEngine = async () => {
   if (worker) return;
 
-  // Create Worker from Blob (No external file needed)
-  const blob = new Blob([PYODIDE_WORKER_CODE], { type: 'application/javascript' });
-  worker = new Worker(URL.createObjectURL(blob));
+  try {
+      // Create Worker from Blob
+      const blob = new Blob([PYODIDE_WORKER_CODE], { type: 'application/javascript' });
+      const workerUrl = URL.createObjectURL(blob);
+      worker = new Worker(workerUrl);
 
-  worker.onmessage = (e) => {
-    const { type, id, results, error, msg } = e.data;
+      worker.onmessage = (e) => {
+        const { type, id, results, error, msg } = e.data;
 
-    // Handle Status Updates
-    if (type === 'STATUS') {
-      if (msg === 'READY') {
-        console.log("EthicalCode Engine: Online");
-        workerStatus = 'ready';
-      }
-      return;
-    }
+        // Handle Status Updates
+        if (type === 'STATUS') {
+          if (msg === 'READY') {
+            console.log("EthicalCode Engine: Online");
+            workerStatus = 'ready';
+          } else if (msg === 'ERROR') {
+            console.error("EthicalCode Engine Failed:", error);
+            workerStatus = 'error';
+          }
+          return;
+        }
 
-    // Handle Execution Responses
-    if (id && pendingPromises.has(id)) {
-      const { resolve, reject } = pendingPromises.get(id)!;
-      if (error) reject(new Error(error));
-      else resolve(results);
-      pendingPromises.delete(id);
-    }
-  };
+        // Handle Execution Responses
+        if (id && pendingPromises.has(id)) {
+          const { resolve, reject } = pendingPromises.get(id)!;
+          if (error) reject(new Error(error));
+          else resolve(results);
+          pendingPromises.delete(id);
+        }
+      };
+      
+      worker.onerror = (e) => {
+          console.error("Worker Error:", e);
+          workerStatus = 'error';
+      };
+
+  } catch (e) {
+      console.error("Worker Initialization Failed:", e);
+      workerStatus = 'error';
+  }
 };
 
 /**
@@ -126,7 +140,7 @@ const executeRealPython = async (code: string): Promise<string> => {
       setTimeout(() => {
         if (pendingPromises.has(id)) {
             pendingPromises.delete(id);
-            reject(new Error("Execution Timed Out (Process Hung)"));
+            reject(new Error("Execution Timed Out (Process Hung or Network Issue)"));
         }
       }, 15000);
    });
@@ -227,21 +241,20 @@ Available Commands:
       if (!editorCode.trim()) return "Error: Code Editor is empty. Write some python code first.";
       
       // Try to use Worker Engine first
-      if (worker) {
+      if (worker && workerStatus === 'ready') {
           try {
              return await executeRealPython(editorCode);
           } catch (e: any) {
-             // Fallback if worker fails or is initializing
-             if (workerStatus !== 'ready') return "System is booting up core modules... Try again in 5 seconds.";
              return `Runtime Error: ${e.message}`;
           }
       }
       
-      // Fallback to Gemini if Worker is dead (rare)
+      // Fallback to Gemini if Worker is dead/loading
       if (process.env.API_KEY) {
          return await simulateCodeExecution(editorCode, 'python');
       } else {
-         return "Python Engine initializing... Check console for errors.";
+         if (workerStatus === 'loading') return "Engine is warming up... (requires internet for first load). Try again in 10s.";
+         return "Python Engine Error. Check internet or add API Key for cloud fallback.";
       }
 
     default:
