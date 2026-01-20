@@ -50,4 +50,4 @@ Configured for GitHub Pages. Pushing to `main` triggers the build workflow via G
 
 ## License
 
-MIT.
+Distributed under the MIT License. See `LICENSE` for more information.
