@@ -30,6 +30,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
+          # Install Capacitor dependencies explicitly to ensure availability
           npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/assets @capacitor/filesystem @capacitor/share --save
 
       - name: Build Web App
@@ -43,7 +44,8 @@ jobs:
       - name: Create Custom Icon Asset
         run: |
           mkdir -p assets
-          # Create the SVG file using a Heredoc to avoid quoting issues
+          # Create the SVG file. 
+          # We use a simple SVG that represents the Cipher Academy brand (Circuit Key).
           cat <<EOF > assets/logo.svg
           <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="100" height="100" fill="#050505"/>
@@ -56,13 +58,14 @@ jobs:
           EOF
           
           # Verify file creation
-          echo "Checking assets directory..."
+          echo "Listing assets directory to confirm creation:"
           ls -la assets/
 
       - name: Generate Android Icons
-        # Using the file we just verified exists
+        # FIX: --assetPath must point to the DIRECTORY ('assets'), not the file.
+        # The tool automatically looks for 'logo.svg' inside 'assets'.
         run: |
-          npx @capacitor/assets generate --iconBackgroundColor '#050505' --splashBackgroundColor '#050505' --assetPath assets/logo.svg --android
+          npx @capacitor/assets generate --iconBackgroundColor '#050505' --splashBackgroundColor '#050505' --assetPath assets --android
 
       - name: Sync Capacitor
         run: npx cap sync android
