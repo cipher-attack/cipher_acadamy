@@ -39,17 +39,28 @@ jobs:
         run: |
           npx cap add android
 
-      # --- FIXED ICON GENERATION STEP ---
-      # Instead of downloading, we CREATE the SVG file right here.
-      # This ensures the file exists and uses your custom brand design.
+      # --- ROBUST ICON CREATION ---
       - name: Create Custom Icon Asset
         run: |
           mkdir -p assets
-          # This writes the SVG code directly into assets/logo.svg
-          echo '<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0a0a0a"/><stop offset="100%" stop-color="#000"/></linearGradient></defs><rect width="512" height="512" rx="100" fill="url(#g)"/><path d="M256 50L80 140v190c0 80 176 132 176 132s176-52 176-132V140L256 50z" fill="none" stroke="#C5A059" stroke-width="15"/><g transform="translate(106,106) scale(3)"><path d="M75 25L35 25 15 50l20 25h40" stroke="#C5A059" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="40" cy="50" r="10" stroke="#C5A059" stroke-width="6"/><path d="M50 50h35M68 50v12M78 50v8" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/></g></svg>' > assets/logo.svg
+          # Create the SVG file using a Heredoc to avoid quoting issues
+          cat <<EOF > assets/logo.svg
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="#050505"/>
+            <path d="M 75 25 L 35 25 L 15 50 L 35 75 L 75 75" stroke="#C5A059" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="40" cy="50" r="10" stroke="#C5A059" stroke-width="6"/>
+            <path d="M 50 50 L 85 50" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 68 50 L 68 62" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 78 50 L 78 58" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          EOF
+          
+          # Verify file creation
+          echo "Checking assets directory..."
+          ls -la assets/
 
       - name: Generate Android Icons
-        # Now we point to the LOCAL file we just created
+        # Using the file we just verified exists
         run: |
           npx @capacitor/assets generate --iconBackgroundColor '#050505' --splashBackgroundColor '#050505' --assetPath assets/logo.svg --android
 
