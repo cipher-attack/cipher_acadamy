@@ -70,7 +70,7 @@ const LearningRoadmap = ({ syllabus, completedIds, onSelect, activeId }: { sylla
     );
 };
 
-// Defined outside to prevent syntax errors or re-creation issues
+// Defined outside to prevent syntax errors or re-creation problem
 const MarkdownComponents = {
   code: ({ node, className, children, ...rest }: any) => {
     const match = /language-(\w+)/.exec(className || '');
@@ -92,7 +92,7 @@ const MarkdownComponents = {
         </div>
     );
   },
-  // ELITE STYLING: No Emojis, Pure CSS Decoration
+  // ELITE STYLING: No Emojis, Pure CSS decoder
   h1: ({node, ...props}: any) => <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6 mt-8 font-serif border-b border-gray-200 dark:border-gray-700 pb-3" {...props} />,
   h2: ({node, ...props}: any) => <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 mt-8 font-serif flex items-center gap-2 before:content-[''] before:w-1 before:h-6 before:bg-brand before:mr-2 before:rounded-full" {...props} />,
   h3: ({node, ...props}: any) => (
